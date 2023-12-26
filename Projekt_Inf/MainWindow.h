@@ -449,6 +449,91 @@ namespace ProjektInf {
 	}
 
 
+	private: System::Void addItemBtn_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+
+		// Clear errors
+		clearErrors();
+
+		bool err = false;
+		// guard: name empty
+		if (this->newItemNameTB->Lines->Length < 1
+			|| System::String::IsNullOrWhiteSpace(this->newItemNameTB->Lines[0]))
+		{
+			this->ErrorProvider->SetError(this->newItemNameTB,
+				L"To pole nie mo¿e byæ puste");
+			err = true;
+		}
+
+		// guard: target not selected
+		if (this->StorageViewTV->SelectedNode == nullptr)
+		{
+			this->ErrorProvider->SetError(this->StorageViewTV,
+				L"Wybierz, gdzie umieœciæ pojemnik");
+
+			err = true;
+		}
+
+		TreeNode^ selNode = this->StorageViewTV->SelectedNode;
+
+		// guard: item selected
+
+		if (err) return;
+
+		if (selNode->Tag->GetType()->Name == "Item")
+		{
+			this->ErrorProvider->SetError(this->StorageViewTV,
+				L"Nie mo¿na umieœæiæ przedmiotu w innym przedmiocie");
+
+			return;
+		}
+
+		CStore^ targetStorage = dynamic_cast<CStore^>(selNode->Tag);
+
+		// guard: cast failed
+		if (targetStorage == nullptr)
+		{
+			System::String^ errMsg = L"Aplikacja napotka³a niespodziewany problem";
+			System::String^ cap = L"Wybrany element nie zawiera prawid³owego wska¿nika";
+
+			auto errbox = MessageBox::Show(
+				errMsg, cap,
+				MessageBoxButtons::OKCancel,
+				MessageBoxIcon::Error
+			);
+			if (errbox == System::Windows::Forms::DialogResult::OK)
+			{
+				return;
+			}
+			else
+			{
+				Application::Exit();
+			}
+		}
+
+		// Create new Container
+		Item^ item = gcnew Item(
+			this->newItemNameTB->Lines[0],
+			System::String::Join(Environment::NewLine, this->newItemNameTB->Lines),
+			0
+		);
+
+		// Create associated TreeNode
+		TreeNode^ node = gcnew TreeNode();
+		node->Text = item->getName();
+		node->ToolTipText = item->getDescription();
+		node->Tag = item;
+
+		// Put in master storage and add to graph
+		targetStorage->place(item);
+		selNode->Nodes->Add(node);
+		this->StorageViewTV->Sort();
+
+		// Clean inputs
+		this->newItemNameTB->Clear();
+		this->newItemDescTB->Clear();
+	}
+
 private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^ e) 
 {
 	this->StorageViewTV->Nodes[0]->Tag = ProgramState::masterStorage;
