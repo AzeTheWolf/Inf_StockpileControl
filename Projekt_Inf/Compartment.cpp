@@ -1,0 +1,44 @@
+#include "Compartment.h"
+
+using namespace ProjektInf;
+
+Compartment::Compartment(System::String^ displayName, System::String^ description)
+{
+    this->displayName = System::String::IsNullOrWhiteSpace(displayName)
+        ? L"Pojemnik"
+        : displayName;
+    this->description = description;
+}
+
+void Compartment::zero()
+{
+    this->contents->Clear();
+}
+
+System::String^ Compartment::getName()
+{
+    return this->displayName;
+}
+
+bool Compartment::setName(System::String^ name)
+{
+    if (System::String::IsNullOrWhiteSpace(name)) return false;
+
+    this->displayName = name;
+    return true;
+}
+
+System::String^ Compartment::getDescription()
+{
+    return this->description;
+}
+
+bool Compartment::setDescription(System::String^ description)
+{
+    if (description == nullptr) return false;
+
+    this->description = description;
+    return true;
+}
+
+
