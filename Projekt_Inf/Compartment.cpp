@@ -41,4 +41,9 @@ bool Compartment::setDescription(System::String^ description)
     return true;
 }
 
+CStore^ ProjektInf::Compartment::parent()
+{
+    return this->location;
+}
+
 

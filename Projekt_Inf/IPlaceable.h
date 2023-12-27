@@ -1,6 +1,7 @@
 #pragma once
 
 namespace ProjektInf {
+	ref class CStore;
 
     interface class IPlaceable
 	{

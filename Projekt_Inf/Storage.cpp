@@ -1,4 +1,5 @@
 #include "Storage.h"
+#include "IPlaceable.h"
 
 using namespace ProjektInf;
 

@@ -41,3 +41,8 @@ bool ProjektInf::Item::setDescription(System::String^ description)
     this->description = description;
     return true;
 }
+
+CStore^ ProjektInf::Item::parent()
+{
+    return this->location;
+}

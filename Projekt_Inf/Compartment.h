@@ -1,7 +1,7 @@
 #pragma once
 
-#include "IPlaceable.h"
 #include "Storage.h"
+#include "IPlaceable.h"
 
 namespace ProjektInf {
 
@@ -10,6 +10,7 @@ namespace ProjektInf {
 	protected:
 		System::String^ displayName;
 		System::String^ description;
+		CStore^ location = nullptr;
 	public:
 		Compartment(System::String^ displayName, System::String^ description);
 		virtual void zero();
@@ -20,6 +21,8 @@ namespace ProjektInf {
 
 		virtual System::String^ getDescription();
 		virtual bool setDescription(System::String^ description);
+
+		virtual CStore^ parent();
 	};
 
 }

@@ -1,4 +1,6 @@
 #pragma once
+
+#include "Storage.h"
 #include "IPlaceable.h"
 
 namespace ProjektInf {
@@ -12,6 +14,8 @@ namespace ProjektInf {
 
 		System::String^ displayName;
 		System::String^ description;
+
+		CStore^ location;
 
 	public:
 
@@ -30,6 +34,8 @@ namespace ProjektInf {
 
 		virtual bool setName(System::String^ name);
 		virtual bool setDescription(System::String^ description);
+
+		virtual CStore^ parent();
 	};
 
 }

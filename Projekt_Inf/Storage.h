@@ -1,9 +1,7 @@
 #pragma once
 
-#include "IPlaceable.h"
-
 namespace ProjektInf {
-
+	interface class IPlaceable;
 	ref class CStore
 	{
 	protected:
