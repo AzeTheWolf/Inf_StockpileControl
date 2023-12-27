@@ -23,6 +23,7 @@ namespace ProjektInf {
 		virtual bool setDescription(System::String^ description);
 
 		virtual CStore^ parent();
+		virtual void setParent(CStore^ parent);
 	};
 
 }

@@ -13,16 +13,18 @@ void CStore::place(IPlaceable^ object)
 	//if (this->contents->BinarySearch(object) < 0)
 	{
 		this->contents->Add(object);
+		object->setParent(this);
 	}
 }
 
-void CStore::remove(IPlaceable^ item)
+void CStore::remove(IPlaceable^ object)
 {
-	this->contents->Remove(item);
+	this->contents->Remove(object);
+	object->setParent(nullptr);
 }
 
 void ProjektInf::CStore::sendTo(IPlaceable^ item, CStore^ other)
 {
 	other->place(item);
-	this->remove(item);
+	this->contents->Remove(item);
 }

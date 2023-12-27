@@ -369,7 +369,6 @@ namespace ProjektInf {
 			this->ErrorProvider->SetError(this->newItemNameTB, nullptr);
 		}
 
-
 		/**
 		* Add Store button clicked
 		*/

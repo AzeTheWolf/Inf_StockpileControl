@@ -11,7 +11,7 @@ namespace ProjektInf {
 	public:
 		CStore();
 		void place(IPlaceable^ object);
-		void remove(IPlaceable^ item);
+		void remove(IPlaceable^ object);
 		void sendTo(IPlaceable^ item, CStore^ other);
 
 		System::Collections::Generic::List<IPlaceable^>^ getContents()

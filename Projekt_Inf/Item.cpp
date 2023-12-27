@@ -46,3 +46,8 @@ CStore^ ProjektInf::Item::parent()
 {
     return this->location;
 }
+
+void ProjektInf::Item::setParent(CStore^ parent)
+{
+    this->location = parent;
+}
