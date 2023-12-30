@@ -87,8 +87,10 @@ namespace ProjektInf {
 	private: System::Windows::Forms::ColumnHeader^ columnHeader4;
 	private: System::Windows::Forms::ColumnHeader^ columnHeader5;
 	private: System::Windows::Forms::MenuStrip^ menuStrip1;
-	private: System::Windows::Forms::ToolStripMenuItem^ magazynToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ opró¿nijMagazynG³ównyToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ magazynTSMI;
+
+	private: System::Windows::Forms::ToolStripMenuItem^ emptyMainTSMI;
+
 
 
 
@@ -150,8 +152,8 @@ namespace ProjektInf {
 			this->ErrorProvider = (gcnew System::Windows::Forms::ErrorProvider(this->components));
 			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
-			this->magazynToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->opró¿nijMagazynG³ównyToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->magazynTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->emptyMainTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->windowTabsTC->SuspendLayout();
 			this->storageTabPage->SuspendLayout();
 			this->groupBox2->SuspendLayout();
@@ -421,25 +423,26 @@ namespace ProjektInf {
 			// menuStrip1
 			// 
 			this->menuStrip1->ImageScalingSize = System::Drawing::Size(20, 20);
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->magazynToolStripMenuItem });
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->magazynTSMI });
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
 			this->menuStrip1->Size = System::Drawing::Size(1280, 28);
 			this->menuStrip1->TabIndex = 4;
 			this->menuStrip1->Text = L"menuStrip1";
 			// 
-			// magazynToolStripMenuItem
+			// magazynTSMI
 			// 
-			this->magazynToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->opró¿nijMagazynG³ównyToolStripMenuItem });
-			this->magazynToolStripMenuItem->Name = L"magazynToolStripMenuItem";
-			this->magazynToolStripMenuItem->Size = System::Drawing::Size(83, 24);
-			this->magazynToolStripMenuItem->Text = L"Magazyn";
+			this->magazynTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->emptyMainTSMI });
+			this->magazynTSMI->Name = L"magazynTSMI";
+			this->magazynTSMI->Size = System::Drawing::Size(83, 24);
+			this->magazynTSMI->Text = L"Magazyn";
 			// 
-			// opró¿nijMagazynG³ównyToolStripMenuItem
+			// emptyMainTSMI
 			// 
-			this->opró¿nijMagazynG³ównyToolStripMenuItem->Name = L"opró¿nijMagazynG³ównyToolStripMenuItem";
-			this->opró¿nijMagazynG³ównyToolStripMenuItem->Size = System::Drawing::Size(265, 26);
-			this->opró¿nijMagazynG³ównyToolStripMenuItem->Text = L"Opró¿nij magazyn g³ówny";
+			this->emptyMainTSMI->Name = L"emptyMainTSMI";
+			this->emptyMainTSMI->Size = System::Drawing::Size(265, 26);
+			this->emptyMainTSMI->Text = L"Opró¿nij magazyn g³ówny";
+			this->emptyMainTSMI->Click += gcnew System::EventHandler(this, &MainWindow::emptyMainTSMI_Click);
 			// 
 			// MainWindow
 			// 
@@ -710,15 +713,15 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 		TreeNode^ selNode = this->StorageViewTV->SelectedNode;
 
 		// guard: selected node points at Item
-		if (selNode->Tag->GetType()->Name == "Item")
+		if (selNode->Tag == ProgramState::masterStorage)
 		{
 			this->ErrorProvider->SetError(this->StorageViewTV,
-				L"Nie mo¿na umieœæiæ przedmiotu w innym przedmiocie");
+				L"Aby opró¿niæ magazyn g³ówny wybierz Magazyn > Opró¿nij magazyn g³ówny");
 
 			return;
 		}
 
-		Compartment^ target = dynamic_cast<Compartment^>(selNode->Tag);
+		IPlaceable^ target = dynamic_cast<IPlaceable^>(selNode->Tag);
 
 		if (target == nullptr)
 		{
@@ -735,8 +738,31 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 			}
 		}
 
+		if (!ProgramState::confirmBox(
+			L"Potwierdzenie",
+			L"Czy na pewno chcesz opró¿niæ element " + selNode->Text + "? Tej czynnoœci nie mo¿na cofn¹æ",
+			MessageBoxIcon::Warning
+		)) return;
+
 		target->zero();
 		selNode->Nodes->Clear();
+	}
+	
+	private: System::Void emptyMainTSMI_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		clearErrors();
+		if (!ProgramState::confirmBox(
+			L"Potwierdzenie",
+			L"Czy na pewno chcesz opró¿niæ magazyn g³ówny? Tej czynnoœci nie mo¿na cofn¹æ!",
+			MessageBoxIcon::Warning
+		)) return;
+
+		while (ProgramState::masterStorage->getContents()->Count > 0)
+		{
+			ProgramState::masterStorage->remove(ProgramState::masterStorage->getContents()[0]);
+		}
+
+		this->StorageViewTV->Nodes[0]->Nodes->Clear();
 	}
 };
 }

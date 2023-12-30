@@ -51,3 +51,11 @@ void ProjektInf::Item::setParent(CStore^ parent)
 {
     this->location = parent;
 }
+
+
+System::Collections::Generic::List<IPlaceable^>^ ProjektInf::Item::getItems()
+{
+    auto list = gcnew System::Collections::Generic::List<IPlaceable^>;
+    list->Add(this);
+    return list;
+}
