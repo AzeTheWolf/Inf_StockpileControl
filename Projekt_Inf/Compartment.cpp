@@ -12,7 +12,10 @@ Compartment::Compartment(System::String^ displayName, System::String^ descriptio
 
 void Compartment::zero()
 {
-    this->contents->Clear();
+    while (this->contents->Count > 0)
+    {
+        this->remove(this->contents[0]);
+    }
 }
 
 System::String^ Compartment::getName()

@@ -86,6 +86,9 @@ namespace ProjektInf {
 	private: System::Windows::Forms::ColumnHeader^ columnHeader3;
 	private: System::Windows::Forms::ColumnHeader^ columnHeader4;
 	private: System::Windows::Forms::ColumnHeader^ columnHeader5;
+	private: System::Windows::Forms::MenuStrip^ menuStrip1;
+	private: System::Windows::Forms::ToolStripMenuItem^ magazynToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ opró¿nijMagazynG³ównyToolStripMenuItem;
 
 
 
@@ -146,20 +149,24 @@ namespace ProjektInf {
 			this->columnHeader5 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->ErrorProvider = (gcnew System::Windows::Forms::ErrorProvider(this->components));
 			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
+			this->magazynToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->opró¿nijMagazynG³ównyToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->windowTabsTC->SuspendLayout();
 			this->storageTabPage->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->groupBox1->SuspendLayout();
 			this->itemsTabPage->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ErrorProvider))->BeginInit();
+			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// addStoreBtn
 			// 
-			this->addStoreBtn->Location = System::Drawing::Point(4, 413);
-			this->addStoreBtn->Margin = System::Windows::Forms::Padding(2);
+			this->addStoreBtn->Location = System::Drawing::Point(5, 508);
+			this->addStoreBtn->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->addStoreBtn->Name = L"addStoreBtn";
-			this->addStoreBtn->Size = System::Drawing::Size(270, 24);
+			this->addStoreBtn->Size = System::Drawing::Size(360, 30);
 			this->addStoreBtn->TabIndex = 0;
 			this->addStoreBtn->Text = L"Dodaj pojemnik";
 			this->addStoreBtn->UseVisualStyleBackColor = true;
@@ -168,10 +175,10 @@ namespace ProjektInf {
 			// delStoreBtn
 			// 
 			this->delStoreBtn->Enabled = false;
-			this->delStoreBtn->Location = System::Drawing::Point(4, 440);
-			this->delStoreBtn->Margin = System::Windows::Forms::Padding(2);
+			this->delStoreBtn->Location = System::Drawing::Point(5, 542);
+			this->delStoreBtn->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->delStoreBtn->Name = L"delStoreBtn";
-			this->delStoreBtn->Size = System::Drawing::Size(270, 25);
+			this->delStoreBtn->Size = System::Drawing::Size(360, 31);
 			this->delStoreBtn->TabIndex = 2;
 			this->delStoreBtn->Text = L"Usuñ pojemnik";
 			this->delStoreBtn->UseVisualStyleBackColor = true;
@@ -180,11 +187,11 @@ namespace ProjektInf {
 			// 
 			this->windowTabsTC->Controls->Add(this->storageTabPage);
 			this->windowTabsTC->Controls->Add(this->itemsTabPage);
-			this->windowTabsTC->Location = System::Drawing::Point(4, 27);
-			this->windowTabsTC->Margin = System::Windows::Forms::Padding(2);
+			this->windowTabsTC->Location = System::Drawing::Point(5, 33);
+			this->windowTabsTC->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->windowTabsTC->Name = L"windowTabsTC";
 			this->windowTabsTC->SelectedIndex = 0;
-			this->windowTabsTC->Size = System::Drawing::Size(947, 548);
+			this->windowTabsTC->Size = System::Drawing::Size(1263, 674);
 			this->windowTabsTC->TabIndex = 3;
 			// 
 			// storageTabPage
@@ -192,11 +199,11 @@ namespace ProjektInf {
 			this->storageTabPage->Controls->Add(this->groupBox2);
 			this->storageTabPage->Controls->Add(this->groupBox1);
 			this->storageTabPage->Controls->Add(this->StorageViewTV);
-			this->storageTabPage->Location = System::Drawing::Point(4, 22);
-			this->storageTabPage->Margin = System::Windows::Forms::Padding(2);
+			this->storageTabPage->Location = System::Drawing::Point(4, 25);
+			this->storageTabPage->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->storageTabPage->Name = L"storageTabPage";
-			this->storageTabPage->Padding = System::Windows::Forms::Padding(2);
-			this->storageTabPage->Size = System::Drawing::Size(939, 522);
+			this->storageTabPage->Padding = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->storageTabPage->Size = System::Drawing::Size(1255, 645);
 			this->storageTabPage->TabIndex = 0;
 			this->storageTabPage->Text = L"Struktura";
 			this->storageTabPage->UseVisualStyleBackColor = true;
@@ -209,11 +216,11 @@ namespace ProjektInf {
 			this->groupBox2->Controls->Add(this->addItemBtn);
 			this->groupBox2->Controls->Add(this->label4);
 			this->groupBox2->Controls->Add(this->newItemDescTB);
-			this->groupBox2->Location = System::Drawing::Point(635, 13);
-			this->groupBox2->Margin = System::Windows::Forms::Padding(2);
+			this->groupBox2->Location = System::Drawing::Point(847, 16);
+			this->groupBox2->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->groupBox2->Name = L"groupBox2";
-			this->groupBox2->Padding = System::Windows::Forms::Padding(2);
-			this->groupBox2->Size = System::Drawing::Size(291, 501);
+			this->groupBox2->Padding = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->groupBox2->Size = System::Drawing::Size(388, 617);
 			this->groupBox2->TabIndex = 10;
 			this->groupBox2->TabStop = false;
 			this->groupBox2->Text = L"Zarz¹dzaj przedmiotami";
@@ -221,38 +228,37 @@ namespace ProjektInf {
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(7, 24);
-			this->label3->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label3->Location = System::Drawing::Point(9, 30);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(40, 13);
+			this->label3->Size = System::Drawing::Size(48, 16);
 			this->label3->TabIndex = 6;
 			this->label3->Text = L"Nazwa";
 			// 
 			// newItemNameTB
 			// 
-			this->newItemNameTB->Location = System::Drawing::Point(10, 39);
-			this->newItemNameTB->Margin = System::Windows::Forms::Padding(2);
+			this->newItemNameTB->Location = System::Drawing::Point(13, 48);
+			this->newItemNameTB->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->newItemNameTB->Name = L"newItemNameTB";
-			this->newItemNameTB->Size = System::Drawing::Size(257, 20);
+			this->newItemNameTB->Size = System::Drawing::Size(341, 22);
 			this->newItemNameTB->TabIndex = 4;
 			// 
 			// delItemBtn
 			// 
 			this->delItemBtn->Enabled = false;
-			this->delItemBtn->Location = System::Drawing::Point(3, 471);
-			this->delItemBtn->Margin = System::Windows::Forms::Padding(2);
+			this->delItemBtn->Location = System::Drawing::Point(4, 580);
+			this->delItemBtn->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->delItemBtn->Name = L"delItemBtn";
-			this->delItemBtn->Size = System::Drawing::Size(270, 25);
+			this->delItemBtn->Size = System::Drawing::Size(360, 31);
 			this->delItemBtn->TabIndex = 2;
 			this->delItemBtn->Text = L"Usuñ przedmiot";
 			this->delItemBtn->UseVisualStyleBackColor = true;
 			// 
 			// addItemBtn
 			// 
-			this->addItemBtn->Location = System::Drawing::Point(3, 444);
-			this->addItemBtn->Margin = System::Windows::Forms::Padding(2);
+			this->addItemBtn->Location = System::Drawing::Point(4, 546);
+			this->addItemBtn->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->addItemBtn->Name = L"addItemBtn";
-			this->addItemBtn->Size = System::Drawing::Size(270, 24);
+			this->addItemBtn->Size = System::Drawing::Size(360, 30);
 			this->addItemBtn->TabIndex = 0;
 			this->addItemBtn->Text = L"Dodaj przedmiot";
 			this->addItemBtn->UseVisualStyleBackColor = true;
@@ -261,20 +267,19 @@ namespace ProjektInf {
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(9, 62);
-			this->label4->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label4->Location = System::Drawing::Point(12, 76);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(28, 13);
+			this->label4->Size = System::Drawing::Size(35, 16);
 			this->label4->TabIndex = 7;
 			this->label4->Text = L"Opis";
 			// 
 			// newItemDescTB
 			// 
-			this->newItemDescTB->Location = System::Drawing::Point(10, 77);
-			this->newItemDescTB->Margin = System::Windows::Forms::Padding(2);
+			this->newItemDescTB->Location = System::Drawing::Point(13, 95);
+			this->newItemDescTB->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->newItemDescTB->Multiline = true;
 			this->newItemDescTB->Name = L"newItemDescTB";
-			this->newItemDescTB->Size = System::Drawing::Size(257, 351);
+			this->newItemDescTB->Size = System::Drawing::Size(341, 431);
 			this->newItemDescTB->TabIndex = 5;
 			// 
 			// groupBox1
@@ -286,11 +291,11 @@ namespace ProjektInf {
 			this->groupBox1->Controls->Add(this->addStoreBtn);
 			this->groupBox1->Controls->Add(this->label2);
 			this->groupBox1->Controls->Add(this->newStoreDescTB);
-			this->groupBox1->Location = System::Drawing::Point(4, 13);
-			this->groupBox1->Margin = System::Windows::Forms::Padding(2);
+			this->groupBox1->Location = System::Drawing::Point(5, 16);
+			this->groupBox1->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Padding = System::Windows::Forms::Padding(2);
-			this->groupBox1->Size = System::Drawing::Size(291, 501);
+			this->groupBox1->Padding = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->groupBox1->Size = System::Drawing::Size(388, 617);
 			this->groupBox1->TabIndex = 9;
 			this->groupBox1->TabStop = false;
 			this->groupBox1->Text = L"Zarz¹dzaj pojemnikami";
@@ -298,56 +303,55 @@ namespace ProjektInf {
 			// emptyStoreBtn
 			// 
 			this->emptyStoreBtn->Enabled = false;
-			this->emptyStoreBtn->Location = System::Drawing::Point(4, 472);
-			this->emptyStoreBtn->Margin = System::Windows::Forms::Padding(2);
+			this->emptyStoreBtn->Location = System::Drawing::Point(5, 581);
+			this->emptyStoreBtn->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->emptyStoreBtn->Name = L"emptyStoreBtn";
-			this->emptyStoreBtn->Size = System::Drawing::Size(270, 25);
+			this->emptyStoreBtn->Size = System::Drawing::Size(360, 31);
 			this->emptyStoreBtn->TabIndex = 8;
 			this->emptyStoreBtn->Text = L"Opró¿nij pojemnik";
 			this->emptyStoreBtn->UseVisualStyleBackColor = true;
+			this->emptyStoreBtn->Click += gcnew System::EventHandler(this, &MainWindow::emptyStoreBtn_Click);
 			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(7, 24);
-			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label1->Location = System::Drawing::Point(9, 30);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(40, 13);
+			this->label1->Size = System::Drawing::Size(48, 16);
 			this->label1->TabIndex = 6;
 			this->label1->Text = L"Nazwa";
 			// 
 			// newStoreNameTB
 			// 
-			this->newStoreNameTB->Location = System::Drawing::Point(10, 39);
-			this->newStoreNameTB->Margin = System::Windows::Forms::Padding(2);
+			this->newStoreNameTB->Location = System::Drawing::Point(13, 48);
+			this->newStoreNameTB->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->newStoreNameTB->Name = L"newStoreNameTB";
-			this->newStoreNameTB->Size = System::Drawing::Size(257, 20);
+			this->newStoreNameTB->Size = System::Drawing::Size(341, 22);
 			this->newStoreNameTB->TabIndex = 4;
 			// 
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(9, 62);
-			this->label2->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label2->Location = System::Drawing::Point(12, 76);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(28, 13);
+			this->label2->Size = System::Drawing::Size(35, 16);
 			this->label2->TabIndex = 7;
 			this->label2->Text = L"Opis";
 			// 
 			// newStoreDescTB
 			// 
-			this->newStoreDescTB->Location = System::Drawing::Point(10, 77);
-			this->newStoreDescTB->Margin = System::Windows::Forms::Padding(2);
+			this->newStoreDescTB->Location = System::Drawing::Point(13, 95);
+			this->newStoreDescTB->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->newStoreDescTB->Multiline = true;
 			this->newStoreDescTB->Name = L"newStoreDescTB";
-			this->newStoreDescTB->Size = System::Drawing::Size(257, 323);
+			this->newStoreDescTB->Size = System::Drawing::Size(341, 397);
 			this->newStoreDescTB->TabIndex = 5;
 			// 
 			// StorageViewTV
 			// 
 			this->ErrorProvider->SetIconAlignment(this->StorageViewTV, System::Windows::Forms::ErrorIconAlignment::TopRight);
-			this->StorageViewTV->Location = System::Drawing::Point(300, 13);
-			this->StorageViewTV->Margin = System::Windows::Forms::Padding(2);
+			this->StorageViewTV->Location = System::Drawing::Point(400, 16);
+			this->StorageViewTV->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->StorageViewTV->Name = L"StorageViewTV";
 			treeNode1->BackColor = System::Drawing::Color::Gainsboro;
 			treeNode1->Checked = true;
@@ -355,16 +359,18 @@ namespace ProjektInf {
 			treeNode1->Name = L"master";
 			treeNode1->Text = L"Magazyn";
 			this->StorageViewTV->Nodes->AddRange(gcnew cli::array< System::Windows::Forms::TreeNode^  >(1) { treeNode1 });
-			this->StorageViewTV->Size = System::Drawing::Size(312, 502);
+			this->StorageViewTV->Size = System::Drawing::Size(415, 617);
 			this->StorageViewTV->TabIndex = 8;
+			this->StorageViewTV->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::StorageViewTV_AfterSelect);
+			this->StorageViewTV->NodeMouseClick += gcnew System::Windows::Forms::TreeNodeMouseClickEventHandler(this, &MainWindow::StorageViewTV_NodeMouseClick);
 			// 
 			// itemsTabPage
 			// 
 			this->itemsTabPage->Controls->Add(this->itemList);
-			this->itemsTabPage->Location = System::Drawing::Point(4, 22);
-			this->itemsTabPage->Margin = System::Windows::Forms::Padding(2);
+			this->itemsTabPage->Location = System::Drawing::Point(4, 25);
+			this->itemsTabPage->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->itemsTabPage->Name = L"itemsTabPage";
-			this->itemsTabPage->Size = System::Drawing::Size(939, 522);
+			this->itemsTabPage->Size = System::Drawing::Size(1255, 645);
 			this->itemsTabPage->TabIndex = 1;
 			this->itemsTabPage->Text = L"Przedmioty";
 			this->itemsTabPage->UseVisualStyleBackColor = true;
@@ -377,10 +383,11 @@ namespace ProjektInf {
 			});
 			this->itemList->FullRowSelect = true;
 			this->itemList->HideSelection = false;
-			this->itemList->Location = System::Drawing::Point(4, 3);
+			this->itemList->Location = System::Drawing::Point(5, 4);
+			this->itemList->Margin = System::Windows::Forms::Padding(4);
 			this->itemList->MultiSelect = false;
 			this->itemList->Name = L"itemList";
-			this->itemList->Size = System::Drawing::Size(932, 319);
+			this->itemList->Size = System::Drawing::Size(1241, 392);
 			this->itemList->TabIndex = 0;
 			this->itemList->UseCompatibleStateImageBehavior = false;
 			this->itemList->View = System::Windows::Forms::View::Details;
@@ -411,13 +418,38 @@ namespace ProjektInf {
 			this->ErrorProvider->BlinkStyle = System::Windows::Forms::ErrorBlinkStyle::NeverBlink;
 			this->ErrorProvider->ContainerControl = this;
 			// 
+			// menuStrip1
+			// 
+			this->menuStrip1->ImageScalingSize = System::Drawing::Size(20, 20);
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->magazynToolStripMenuItem });
+			this->menuStrip1->Location = System::Drawing::Point(0, 0);
+			this->menuStrip1->Name = L"menuStrip1";
+			this->menuStrip1->Size = System::Drawing::Size(1280, 28);
+			this->menuStrip1->TabIndex = 4;
+			this->menuStrip1->Text = L"menuStrip1";
+			// 
+			// magazynToolStripMenuItem
+			// 
+			this->magazynToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->opró¿nijMagazynG³ównyToolStripMenuItem });
+			this->magazynToolStripMenuItem->Name = L"magazynToolStripMenuItem";
+			this->magazynToolStripMenuItem->Size = System::Drawing::Size(83, 24);
+			this->magazynToolStripMenuItem->Text = L"Magazyn";
+			// 
+			// opró¿nijMagazynG³ównyToolStripMenuItem
+			// 
+			this->opró¿nijMagazynG³ównyToolStripMenuItem->Name = L"opró¿nijMagazynG³ównyToolStripMenuItem";
+			this->opró¿nijMagazynG³ównyToolStripMenuItem->Size = System::Drawing::Size(265, 26);
+			this->opró¿nijMagazynG³ównyToolStripMenuItem->Text = L"Opró¿nij magazyn g³ówny";
+			// 
 			// MainWindow
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(960, 585);
+			this->ClientSize = System::Drawing::Size(1280, 720);
 			this->Controls->Add(this->windowTabsTC);
-			this->Margin = System::Windows::Forms::Padding(2);
+			this->Controls->Add(this->menuStrip1);
+			this->MainMenuStrip = this->menuStrip1;
+			this->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->Name = L"MainWindow";
 			this->Text = L"MainWindow";
 			this->Load += gcnew System::EventHandler(this, &MainWindow::MainWindow_Load);
@@ -429,7 +461,10 @@ namespace ProjektInf {
 			this->groupBox1->PerformLayout();
 			this->itemsTabPage->ResumeLayout(false);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ErrorProvider))->EndInit();
+			this->menuStrip1->ResumeLayout(false);
+			this->menuStrip1->PerformLayout();
 			this->ResumeLayout(false);
+			this->PerformLayout();
 
 		}
 #pragma endregion
@@ -472,6 +507,8 @@ namespace ProjektInf {
 		}
 
 		TreeNode^ selNode = this->StorageViewTV->SelectedNode; // Isolate selected TreeNode
+
+		// gu
 
 		// guard: Selected node points at item
 		if (selNode->Tag->GetType()->Name == "Item")
@@ -575,15 +612,10 @@ namespace ProjektInf {
 		// guard: cast failed
 		if (targetStorage == nullptr)
 		{
-			System::String^ errMsg = L"Aplikacja napotka³a niespodziewany problem";
-			System::String^ cap = L"Wybrany element nie zawiera prawid³owego wska¿nika";
+			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
+			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
 
-			auto errbox = MessageBox::Show(
-				errMsg, cap,
-				MessageBoxButtons::OKCancel,
-				MessageBoxIcon::Error
-			);
-			if (errbox == System::Windows::Forms::DialogResult::OK)
+			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
 			{
 				return;
 			}
@@ -630,5 +662,81 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 {
 	this->StorageViewTV->Nodes[0]->Tag = ProgramState::masterStorage;
 }
+	private: System::Void StorageViewTV_NodeMouseClick(System::Object^ sender, System::Windows::Forms::TreeNodeMouseClickEventArgs^ e)
+	{
+		
+	}
+
+	private: System::Void StorageViewTV_AfterSelect(System::Object^ sender, System::Windows::Forms::TreeViewEventArgs^ e)
+	{
+		if (this->StorageViewTV->SelectedNode == nullptr
+			|| this->StorageViewTV->SelectedNode == nullptr)
+		{
+			this->delItemBtn->Enabled = false;
+			this->delStoreBtn->Enabled = false;
+			this->emptyStoreBtn->Enabled = false;
+			return;
+		}
+
+		if (this->StorageViewTV->SelectedNode->Tag->GetType()->Name == "Compartment")
+		{
+			this->delItemBtn->Enabled = false;
+			this->delStoreBtn->Enabled = true;
+			this->emptyStoreBtn->Enabled = true;
+			return;
+		}
+
+		if (this->StorageViewTV->SelectedNode->Tag->GetType()->Name == "Item")
+		{
+			this->delItemBtn->Enabled = true;
+			this->delStoreBtn->Enabled = false;
+			this->emptyStoreBtn->Enabled = false;
+			return;
+		}
+	}
+	private: System::Void emptyStoreBtn_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		clearErrors();
+
+		// guard: no node selected
+		if (this->StorageViewTV->SelectedNode == nullptr)
+		{
+			this->ErrorProvider->SetError(
+				this->StorageViewTV,
+				L"Wybierz, który pojemnik opró¿niæ"
+			);
+		}
+
+		TreeNode^ selNode = this->StorageViewTV->SelectedNode;
+
+		// guard: selected node points at Item
+		if (selNode->Tag->GetType()->Name == "Item")
+		{
+			this->ErrorProvider->SetError(this->StorageViewTV,
+				L"Nie mo¿na umieœæiæ przedmiotu w innym przedmiocie");
+
+			return;
+		}
+
+		Compartment^ target = dynamic_cast<Compartment^>(selNode->Tag);
+
+		if (target == nullptr)
+		{
+			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
+			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
+
+			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
+			{
+				return;
+			}
+			else
+			{
+				Application::Exit();
+			}
+		}
+
+		target->zero();
+		selNode->Nodes->Clear();
+	}
 };
 }
