@@ -1,4 +1,5 @@
 #include "Compartment.h"
+#include "ProgramState.h"
 
 using namespace ProjektInf;
 
@@ -63,6 +64,22 @@ System::Collections::Generic::List<IPlaceable^>^ ProjektInf::Compartment::getIte
     }
 
     return list;
+}
+
+System::String^ ProjektInf::Compartment::getPath()
+{
+    System::String^ parentPath;
+    Compartment^ loc = dynamic_cast<Compartment^>(this->location);
+
+    if (this->location == ProgramState::masterStorage || loc == nullptr)
+    {
+        parentPath = "";
+    }
+    else
+    {
+        parentPath = loc->getPath();
+    }
+    return System::String::Format(L"{0}/{1}", parentPath, this->displayName);
 }
 
 

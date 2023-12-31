@@ -90,6 +90,7 @@ namespace ProjektInf {
 	private: System::Windows::Forms::ToolStripMenuItem^ magazynTSMI;
 
 	private: System::Windows::Forms::ToolStripMenuItem^ emptyMainTSMI;
+	private: System::Windows::Forms::Button^ findItemBtn;
 
 
 
@@ -143,6 +144,7 @@ namespace ProjektInf {
 			this->newStoreDescTB = (gcnew System::Windows::Forms::TextBox());
 			this->StorageViewTV = (gcnew System::Windows::Forms::TreeView());
 			this->itemsTabPage = (gcnew System::Windows::Forms::TabPage());
+			this->findItemBtn = (gcnew System::Windows::Forms::Button());
 			this->itemList = (gcnew System::Windows::Forms::ListView());
 			this->columnHeader1 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->columnHeader2 = (gcnew System::Windows::Forms::ColumnHeader());
@@ -364,10 +366,10 @@ namespace ProjektInf {
 			this->StorageViewTV->Size = System::Drawing::Size(415, 617);
 			this->StorageViewTV->TabIndex = 8;
 			this->StorageViewTV->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::StorageViewTV_AfterSelect);
-			this->StorageViewTV->NodeMouseClick += gcnew System::Windows::Forms::TreeNodeMouseClickEventHandler(this, &MainWindow::StorageViewTV_NodeMouseClick);
 			// 
 			// itemsTabPage
 			// 
+			this->itemsTabPage->Controls->Add(this->findItemBtn);
 			this->itemsTabPage->Controls->Add(this->itemList);
 			this->itemsTabPage->Location = System::Drawing::Point(4, 25);
 			this->itemsTabPage->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
@@ -376,6 +378,17 @@ namespace ProjektInf {
 			this->itemsTabPage->TabIndex = 1;
 			this->itemsTabPage->Text = L"Przedmioty";
 			this->itemsTabPage->UseVisualStyleBackColor = true;
+			// 
+			// findItemBtn
+			// 
+			this->findItemBtn->Enabled = false;
+			this->findItemBtn->Location = System::Drawing::Point(1112, 403);
+			this->findItemBtn->Name = L"findItemBtn";
+			this->findItemBtn->Size = System::Drawing::Size(134, 34);
+			this->findItemBtn->TabIndex = 1;
+			this->findItemBtn->Text = L"ZnajdŸ przedmiot";
+			this->findItemBtn->UseVisualStyleBackColor = true;
+			this->findItemBtn->Click += gcnew System::EventHandler(this, &MainWindow::findItemBtn_Click);
 			// 
 			// itemList
 			// 
@@ -393,6 +406,7 @@ namespace ProjektInf {
 			this->itemList->TabIndex = 0;
 			this->itemList->UseCompatibleStateImageBehavior = false;
 			this->itemList->View = System::Windows::Forms::View::Details;
+			this->itemList->SelectedIndexChanged += gcnew System::EventHandler(this, &MainWindow::itemList_SelectedIndexChanged);
 			// 
 			// columnHeader1
 			// 
@@ -511,7 +525,7 @@ namespace ProjektInf {
 
 		TreeNode^ selNode = this->StorageViewTV->SelectedNode; // Isolate selected TreeNode
 
-		// gu
+		if (err) return;
 
 		// guard: Selected node points at item
 		if (selNode->Tag->GetType()->Name == "Item")
@@ -521,8 +535,6 @@ namespace ProjektInf {
 
 			return;
 		}
-
-		if (err) return;
 
 		CStore^ targetStorage = dynamic_cast<CStore^>(selNode->Tag); // Retreive CStore reference from node tag
 
@@ -649,7 +661,7 @@ namespace ProjektInf {
 		// Add item to Items tab list
 		ListViewItem^ listItem = gcnew ListViewItem;
 		listItem->Text = item->getName();
-		listItem->SubItems->Add(L"");
+		listItem->SubItems->Add(item->getQuantity().ToString());
 		listItem->SubItems->Add(L"");
 		listItem->SubItems->Add(L"");
 		listItem->SubItems->Add(item->getDescription());
@@ -665,10 +677,6 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 {
 	this->StorageViewTV->Nodes[0]->Tag = ProgramState::masterStorage;
 }
-	private: System::Void StorageViewTV_NodeMouseClick(System::Object^ sender, System::Windows::Forms::TreeNodeMouseClickEventArgs^ e)
-	{
-		
-	}
 
 	private: System::Void StorageViewTV_AfterSelect(System::Object^ sender, System::Windows::Forms::TreeViewEventArgs^ e)
 	{
@@ -744,6 +752,22 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 			MessageBoxIcon::Warning
 		)) return;
 
+		this->itemList->BeginUpdate();
+
+		auto list = target->getItems();
+
+		for each (ListViewItem ^ item in this->itemList->Items)
+		{
+			Item^ tag = dynamic_cast<Item^>(item->Tag);
+
+			if (tag == nullptr || list->BinarySearch(tag) < 0)
+			{
+				this->itemList->Items->Remove(item);
+			}
+		}
+
+		this->itemList->EndUpdate();
+
 		target->zero();
 		selNode->Nodes->Clear();
 	}
@@ -763,6 +787,47 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 		}
 
 		this->StorageViewTV->Nodes[0]->Nodes->Clear();
+		this->itemList->Items->Clear();
+	}
+	
+	private: System::Void findItemBtn_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+		if (this->itemList->SelectedItems->Count < 1) return;
+
+		Item^ item = dynamic_cast<Item^>(this->itemList->SelectedItems[0]->Tag);
+
+		if (item == nullptr)
+		{
+			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
+			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
+
+			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
+			{
+				return;
+			}
+			else
+			{
+				Application::Exit();
+			}
+		}
+
+		MessageBox::Show(
+			String::Format("{0} znajduje siê w {1}", item->getName(), item->getPath()),
+			L"Lokalizacja",
+			MessageBoxButtons::OK,
+			MessageBoxIcon::Information
+		);
+	}
+	private: System::Void itemList_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (this->itemList->SelectedItems->Count < 1)
+		{
+			this->findItemBtn->Enabled = false;
+		}
+		else
+		{
+			this->findItemBtn->Enabled = true;
+		}
 	}
 };
 }

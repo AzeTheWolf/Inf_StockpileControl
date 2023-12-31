@@ -26,6 +26,7 @@ namespace ProjektInf {
 		virtual void setParent(CStore^ parent);
 
 		virtual System::Collections::Generic::List<IPlaceable^>^ getItems();
+		virtual System::String^ getPath();
 	};
 
 }

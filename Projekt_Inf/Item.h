@@ -21,24 +21,23 @@ namespace ProjektInf {
 
 		Item(System::String^ displayName, System::String^ description, System::UInt16 quantity);
 		
-		System::UInt16 getQuantity()
-		{
-			return quantity;
-		}
-
 		virtual void decaysIn() {};
 		virtual void zero();
 
 		virtual System::String^ getDescription();
 		virtual System::String^ getName();
+		virtual System::UInt16 getQuantity();
 
 		virtual bool setName(System::String^ name);
 		virtual bool setDescription(System::String^ description);
+		virtual bool setQuantity(System::UInt16 quantity);
 
 		virtual CStore^ parent();
 		virtual void setParent(CStore^ parent);
 
 		virtual System::Collections::Generic::List<IPlaceable^>^ getItems();
+		virtual System::String^ getPath();
+
 	};
 
 }

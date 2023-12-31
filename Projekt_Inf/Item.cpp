@@ -1,4 +1,6 @@
 #include "Item.h"
+#include "ProgramState.h"
+#include "Compartment.h"
 
 using namespace ProjektInf;
 
@@ -24,6 +26,18 @@ System::String^ ProjektInf::Item::getDescription()
 System::String^ ProjektInf::Item::getName()
 {
     return this->displayName;
+}
+
+System::UInt16 Item::getQuantity()
+{
+    return this->quantity;
+}
+
+bool ProjektInf::Item::setQuantity(System::UInt16 quantity)
+{
+    this->quantity = quantity;
+    
+    return true;
 }
 
 bool ProjektInf::Item::setName(System::String^ name)
@@ -58,4 +72,20 @@ System::Collections::Generic::List<IPlaceable^>^ ProjektInf::Item::getItems()
     auto list = gcnew System::Collections::Generic::List<IPlaceable^>;
     list->Add(this);
     return list;
+}
+
+System::String^ ProjektInf::Item::getPath()
+{
+    System::String^ parentPath;
+    Compartment^ loc = dynamic_cast<Compartment^>(this->location);
+
+    if (this->location == ProgramState::masterStorage || loc == nullptr)
+    {
+        parentPath = "";
+    }
+    else
+    {
+        parentPath = loc->getPath();
+    }
+    return System::String::Format(L"{0}/{1}", parentPath, this->displayName);
 }
