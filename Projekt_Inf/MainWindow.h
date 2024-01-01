@@ -91,6 +91,9 @@ namespace ProjektInf {
 
 	private: System::Windows::Forms::ToolStripMenuItem^ emptyMainTSMI;
 	private: System::Windows::Forms::Button^ findItemBtn;
+	private: System::Windows::Forms::NumericUpDown^ itemQuantityNUD;
+	private: System::Windows::Forms::Button^ setQuantityBtn;
+
 
 
 
@@ -124,7 +127,7 @@ namespace ProjektInf {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
-			System::Windows::Forms::TreeNode^ treeNode1 = (gcnew System::Windows::Forms::TreeNode(L"Magazyn"));
+			System::Windows::Forms::TreeNode^ treeNode2 = (gcnew System::Windows::Forms::TreeNode(L"Magazyn"));
 			this->addStoreBtn = (gcnew System::Windows::Forms::Button());
 			this->delStoreBtn = (gcnew System::Windows::Forms::Button());
 			this->windowTabsTC = (gcnew System::Windows::Forms::TabControl());
@@ -144,6 +147,8 @@ namespace ProjektInf {
 			this->newStoreDescTB = (gcnew System::Windows::Forms::TextBox());
 			this->StorageViewTV = (gcnew System::Windows::Forms::TreeView());
 			this->itemsTabPage = (gcnew System::Windows::Forms::TabPage());
+			this->setQuantityBtn = (gcnew System::Windows::Forms::Button());
+			this->itemQuantityNUD = (gcnew System::Windows::Forms::NumericUpDown());
 			this->findItemBtn = (gcnew System::Windows::Forms::Button());
 			this->itemList = (gcnew System::Windows::Forms::ListView());
 			this->columnHeader1 = (gcnew System::Windows::Forms::ColumnHeader());
@@ -161,6 +166,7 @@ namespace ProjektInf {
 			this->groupBox2->SuspendLayout();
 			this->groupBox1->SuspendLayout();
 			this->itemsTabPage->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->itemQuantityNUD))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ErrorProvider))->BeginInit();
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
@@ -357,18 +363,20 @@ namespace ProjektInf {
 			this->StorageViewTV->Location = System::Drawing::Point(400, 16);
 			this->StorageViewTV->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->StorageViewTV->Name = L"StorageViewTV";
-			treeNode1->BackColor = System::Drawing::Color::Gainsboro;
-			treeNode1->Checked = true;
-			treeNode1->ForeColor = System::Drawing::Color::Green;
-			treeNode1->Name = L"master";
-			treeNode1->Text = L"Magazyn";
-			this->StorageViewTV->Nodes->AddRange(gcnew cli::array< System::Windows::Forms::TreeNode^  >(1) { treeNode1 });
+			treeNode2->BackColor = System::Drawing::Color::Gainsboro;
+			treeNode2->Checked = true;
+			treeNode2->ForeColor = System::Drawing::Color::Green;
+			treeNode2->Name = L"master";
+			treeNode2->Text = L"Magazyn";
+			this->StorageViewTV->Nodes->AddRange(gcnew cli::array< System::Windows::Forms::TreeNode^  >(1) { treeNode2 });
 			this->StorageViewTV->Size = System::Drawing::Size(415, 617);
 			this->StorageViewTV->TabIndex = 8;
 			this->StorageViewTV->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::StorageViewTV_AfterSelect);
 			// 
 			// itemsTabPage
 			// 
+			this->itemsTabPage->Controls->Add(this->setQuantityBtn);
+			this->itemsTabPage->Controls->Add(this->itemQuantityNUD);
 			this->itemsTabPage->Controls->Add(this->findItemBtn);
 			this->itemsTabPage->Controls->Add(this->itemList);
 			this->itemsTabPage->Location = System::Drawing::Point(4, 25);
@@ -378,6 +386,25 @@ namespace ProjektInf {
 			this->itemsTabPage->TabIndex = 1;
 			this->itemsTabPage->Text = L"Przedmioty";
 			this->itemsTabPage->UseVisualStyleBackColor = true;
+			// 
+			// setQuantityBtn
+			// 
+			this->setQuantityBtn->Enabled = false;
+			this->setQuantityBtn->Location = System::Drawing::Point(145, 410);
+			this->setQuantityBtn->Name = L"setQuantityBtn";
+			this->setQuantityBtn->Size = System::Drawing::Size(118, 33);
+			this->setQuantityBtn->TabIndex = 3;
+			this->setQuantityBtn->Text = L"Ustaw iloœæ";
+			this->setQuantityBtn->UseVisualStyleBackColor = true;
+			this->setQuantityBtn->Click += gcnew System::EventHandler(this, &MainWindow::setQuantityBtn_Click);
+			// 
+			// itemQuantityNUD
+			// 
+			this->itemQuantityNUD->Location = System::Drawing::Point(13, 415);
+			this->itemQuantityNUD->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 65535, 0, 0, 0 });
+			this->itemQuantityNUD->Name = L"itemQuantityNUD";
+			this->itemQuantityNUD->Size = System::Drawing::Size(120, 22);
+			this->itemQuantityNUD->TabIndex = 2;
 			// 
 			// findItemBtn
 			// 
@@ -477,6 +504,7 @@ namespace ProjektInf {
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
 			this->itemsTabPage->ResumeLayout(false);
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->itemQuantityNUD))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ErrorProvider))->EndInit();
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
@@ -823,11 +851,55 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 		if (this->itemList->SelectedItems->Count < 1)
 		{
 			this->findItemBtn->Enabled = false;
+			this->setQuantityBtn->Enabled = false;
+			return;
 		}
-		else
+		
+		this->findItemBtn->Enabled = true;
+		this->setQuantityBtn->Enabled = true;
+
+		Item^ item = dynamic_cast<Item^>(this->itemList->SelectedItems[0]->Tag);
+
+		if (item == nullptr)
 		{
-			this->findItemBtn->Enabled = true;
+			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
+			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
+
+			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
+			{
+				return;
+			}
+			else
+			{
+				Application::Exit();
+			}
 		}
+
+		this->itemQuantityNUD->Value = item->getQuantity();
+	}
+	private: System::Void setQuantityBtn_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (this->itemList->SelectedItems->Count < 1) return;
+
+		Item^ item = dynamic_cast<Item^>(this->itemList->SelectedItems[0]->Tag);
+
+		if (item == nullptr)
+		{
+			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
+			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
+
+			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
+			{
+				return;
+			}
+			else
+			{
+				Application::Exit();
+			}
+		}
+
+		item->setQuantity(static_cast<System::UInt16>(this->itemQuantityNUD->Value));
+		this->itemList->SelectedItems[0]->SubItems[1]->Text = item->getQuantity().ToString();
 	}
 };
 }
