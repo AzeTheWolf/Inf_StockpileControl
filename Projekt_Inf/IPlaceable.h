@@ -6,7 +6,6 @@ namespace ProjektInf {
     interface class IPlaceable
 	{
 		virtual void zero();
-		virtual void decaysIn();
 
 		virtual System::String^ getName();
 		virtual bool setName(System::String^ name);

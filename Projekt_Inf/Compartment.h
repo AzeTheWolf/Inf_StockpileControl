@@ -14,7 +14,6 @@ namespace ProjektInf {
 	public:
 		Compartment(System::String^ displayName, System::String^ description);
 		virtual void zero();
-		virtual void decaysIn() {};
 
 		virtual System::String^ getName();
 		virtual bool setName(System::String^ name);

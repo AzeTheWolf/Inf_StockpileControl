@@ -11,6 +11,8 @@ Item::Item(System::String^ displayName, System::String^ description, System::UIn
         ? L"Przedmiot"
         : displayName;
     this->description = description;
+
+    this->decaysOn = System::DateTime(9999, 1, 1, 0, 0, 0, 0);
 }
 
 void Item::zero()
@@ -33,9 +35,21 @@ System::UInt16 Item::getQuantity()
     return this->quantity;
 }
 
+System::DateTime ProjektInf::Item::getDecayDate()
+{
+    return this->decaysOn;
+}
+
 bool ProjektInf::Item::setQuantity(System::UInt16 quantity)
 {
     this->quantity = quantity;
+    
+    return true;
+}
+
+bool ProjektInf::Item::setDecayDate(System::DateTime date)
+{
+    this->decaysOn = date;
     
     return true;
 }
