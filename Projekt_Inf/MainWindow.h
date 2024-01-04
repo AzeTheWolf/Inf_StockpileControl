@@ -1032,6 +1032,19 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		item->setDecayDate(this->itemExpiryDTP->Value);
 		this->itemList->SelectedItems[0]->SubItems[2]->Text = this->itemExpiryDTP->Value.ToString();
+
+		if (item->getDecayDate() < System::DateTime::Now)
+		{
+			this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::DarkOrange;
+		}
+		else if (item->getDecayDate() < System::DateTime::Now.AddDays(2))
+		{
+			this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::Yellow;
+		}
+		else
+		{
+			this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::Transparent;
+		}
 	}
 	private: System::Void delItemExpiryBtn_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -1058,6 +1071,7 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		item->setDecayDate(System::DateTime(9999, 1, 1, 0, 0, 0, 0));
 		this->itemList->SelectedItems[0]->SubItems[2]->Text = L"-";
+		this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::Transparent;
 	}
 	private: System::Void setNotifQtyBtn_Click(System::Object^ sender, System::EventArgs^ e)
 	{
