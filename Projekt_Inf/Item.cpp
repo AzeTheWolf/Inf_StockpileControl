@@ -91,9 +91,9 @@ void ProjektInf::Item::setParent(CStore^ parent)
 }
 
 
-System::Collections::Generic::List<IPlaceable^>^ ProjektInf::Item::getItems()
+System::Collections::Generic::List<Item^>^ ProjektInf::Item::getItems()
 {
-    auto list = gcnew System::Collections::Generic::List<IPlaceable^>;
+    auto list = gcnew System::Collections::Generic::List<Item^>;
     list->Add(this);
     return list;
 }

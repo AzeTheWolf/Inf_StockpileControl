@@ -2,6 +2,7 @@
 
 namespace ProjektInf {
 	ref class CStore;
+	ref class Item;
 
     interface class IPlaceable
 	{
@@ -16,7 +17,7 @@ namespace ProjektInf {
 		virtual CStore^ parent();
 		virtual void setParent(CStore^ parent);
 
-		virtual System::Collections::Generic::List<IPlaceable^>^ getItems();
+		virtual System::Collections::Generic::List<Item^>^ getItems();
 		virtual System::String^ getPath();
 	};
 }

@@ -2,6 +2,7 @@
 
 namespace ProjektInf {
 	interface class IPlaceable;
+	ref class Item;
 	ref class CStore
 	{
 	protected:
@@ -13,6 +14,7 @@ namespace ProjektInf {
 		void place(IPlaceable^ object);
 		void remove(IPlaceable^ object);
 		void sendTo(IPlaceable^ item, CStore^ other);
+		virtual System::Collections::Generic::List<Item^>^ getItems();
 
 		System::Collections::Generic::List<IPlaceable^>^ getContents()
 		{

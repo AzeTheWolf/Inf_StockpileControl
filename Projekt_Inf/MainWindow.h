@@ -99,6 +99,9 @@ namespace ProjektInf {
 	private: System::Windows::Forms::Button^ setNotifQtyBtn;
 	private: System::Windows::Forms::NumericUpDown^ alertQtyNUD;
 	private: System::Windows::Forms::ColumnHeader^ columnHeader6;
+	private: System::Windows::Forms::ToolStripMenuItem^ odœwie¿ToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ przedmiotToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ odœwie¿ToolStripMenuItem1;
 
 
 
@@ -170,12 +173,15 @@ namespace ProjektInf {
 			this->columnHeader3 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->columnHeader4 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->columnHeader5 = (gcnew System::Windows::Forms::ColumnHeader());
+			this->columnHeader6 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->ErrorProvider = (gcnew System::Windows::Forms::ErrorProvider(this->components));
 			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->magazynTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->emptyMainTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->columnHeader6 = (gcnew System::Windows::Forms::ColumnHeader());
+			this->odœwie¿ToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->przedmiotToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->odœwie¿ToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->windowTabsTC->SuspendLayout();
 			this->storageTabPage->SuspendLayout();
 			this->groupBox2->SuspendLayout();
@@ -535,6 +541,11 @@ namespace ProjektInf {
 			// 
 			this->columnHeader5->Text = L"Opis";
 			// 
+			// columnHeader6
+			// 
+			this->columnHeader6->Text = L"Ostrze¿ gdy";
+			this->columnHeader6->Width = 85;
+			// 
 			// ErrorProvider
 			// 
 			this->ErrorProvider->BlinkRate = 0;
@@ -544,7 +555,7 @@ namespace ProjektInf {
 			// menuStrip1
 			// 
 			this->menuStrip1->ImageScalingSize = System::Drawing::Size(20, 20);
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->magazynTSMI });
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->magazynTSMI, this->przedmiotToolStripMenuItem });
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
 			this->menuStrip1->Padding = System::Windows::Forms::Padding(4, 2, 0, 2);
@@ -554,7 +565,10 @@ namespace ProjektInf {
 			// 
 			// magazynTSMI
 			// 
-			this->magazynTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->emptyMainTSMI });
+			this->magazynTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->emptyMainTSMI,
+					this->odœwie¿ToolStripMenuItem
+			});
 			this->magazynTSMI->Name = L"magazynTSMI";
 			this->magazynTSMI->Size = System::Drawing::Size(67, 20);
 			this->magazynTSMI->Text = L"Magazyn";
@@ -566,10 +580,25 @@ namespace ProjektInf {
 			this->emptyMainTSMI->Text = L"Opró¿nij magazyn g³ówny";
 			this->emptyMainTSMI->Click += gcnew System::EventHandler(this, &MainWindow::emptyMainTSMI_Click);
 			// 
-			// columnHeader6
+			// odœwie¿ToolStripMenuItem
 			// 
-			this->columnHeader6->Text = L"Ostrze¿ gdy";
-			this->columnHeader6->Width = 85;
+			this->odœwie¿ToolStripMenuItem->Name = L"odœwie¿ToolStripMenuItem";
+			this->odœwie¿ToolStripMenuItem->Size = System::Drawing::Size(212, 22);
+			this->odœwie¿ToolStripMenuItem->Text = L"Odœwie¿";
+			// 
+			// przedmiotToolStripMenuItem
+			// 
+			this->przedmiotToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->odœwie¿ToolStripMenuItem1 });
+			this->przedmiotToolStripMenuItem->Name = L"przedmiotToolStripMenuItem";
+			this->przedmiotToolStripMenuItem->Size = System::Drawing::Size(73, 20);
+			this->przedmiotToolStripMenuItem->Text = L"Przedmiot";
+			// 
+			// odœwie¿ToolStripMenuItem1
+			// 
+			this->odœwie¿ToolStripMenuItem1->Name = L"odœwie¿ToolStripMenuItem1";
+			this->odœwie¿ToolStripMenuItem1->Size = System::Drawing::Size(180, 22);
+			this->odœwie¿ToolStripMenuItem1->Text = L"Odœwie¿";
+			this->odœwie¿ToolStripMenuItem1->Click += gcnew System::EventHandler(this, &MainWindow::odœwie¿ToolStripMenuItem1_Click);
 			// 
 			// MainWindow
 			// 
@@ -1031,7 +1060,7 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 		}
 
 		item->setDecayDate(this->itemExpiryDTP->Value);
-		this->itemList->SelectedItems[0]->SubItems[2]->Text = this->itemExpiryDTP->Value.ToString();
+		this->itemList->SelectedItems[0]->SubItems[2]->Text = this->itemExpiryDTP->Value.ToShortDateString();
 
 		if (item->getDecayDate() < System::DateTime::Now)
 		{
@@ -1107,6 +1136,42 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 		{
 			this->itemList->SelectedItems[0]->ForeColor = System::Drawing::Color::Black;
 		}
+	}
+
+	private: System::Void odœwie¿ToolStripMenuItem1_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		System::Collections::Generic::List<Item^>^ list = ProgramState::masterStorage->getItems();
+		this->itemList->Items->Clear();
+
+		this->itemList->BeginUpdate();
+		for each (Item ^ item in list)
+		{
+			ListViewItem^ listItem = gcnew ListViewItem;
+			listItem->Text = item->getName();
+			listItem->SubItems->Add(item->getQuantity().ToString());
+			listItem->SubItems->Add(item->getDecayDate().Year < 9999 ? item->getDecayDate().ToShortDateString() : L"-");
+			listItem->SubItems->Add(L"");
+			listItem->SubItems->Add(item->getDescription());
+			listItem->SubItems->Add(item->getAlertLevel().ToString());
+			listItem->Tag = item;
+
+			if (item->getQuantity() <= item->getAlertLevel())
+			{
+				listItem->ForeColor = System::Drawing::Color::Red;
+			}
+
+			if (item->getDecayDate() < System::DateTime::Now)
+			{
+				this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::DarkOrange;
+			}
+			else if (item->getDecayDate() < System::DateTime::Now.AddDays(2))
+			{
+				this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::Yellow;
+			}
+
+			this->itemList->Items->Add(listItem);
+		}
+		this->itemList->EndUpdate();
 	}
 };
 }

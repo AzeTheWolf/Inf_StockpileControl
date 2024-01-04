@@ -55,17 +55,6 @@ void ProjektInf::Compartment::setParent(CStore^ parent)
     this->location = parent;
 }
 
-System::Collections::Generic::List<IPlaceable^>^ ProjektInf::Compartment::getItems()
-{
-    auto list = gcnew System::Collections::Generic::List<IPlaceable^>;
-    for each (IPlaceable ^ item in this->contents)
-    {
-        list->AddRange(item->getItems());
-    }
-
-    return list;
-}
-
 System::String^ ProjektInf::Compartment::getPath()
 {
     System::String^ parentPath;

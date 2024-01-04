@@ -1,5 +1,6 @@
 #include "Storage.h"
 #include "IPlaceable.h"
+#include "Item.h"
 
 using namespace ProjektInf;
 
@@ -27,4 +28,15 @@ void ProjektInf::CStore::sendTo(IPlaceable^ item, CStore^ other)
 {
 	other->place(item);
 	this->contents->Remove(item);
+}
+
+System::Collections::Generic::List<Item^>^ ProjektInf::CStore::getItems()
+{
+	auto list = gcnew System::Collections::Generic::List<Item^>;
+	for each (Item ^ item in this->contents)
+	{
+		list->AddRange(item->getItems());
+	}
+
+	return list;
 }
