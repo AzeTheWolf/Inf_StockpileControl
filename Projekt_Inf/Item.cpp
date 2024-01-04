@@ -40,6 +40,11 @@ System::DateTime ProjektInf::Item::getDecayDate()
     return this->decaysOn;
 }
 
+System::UInt16 ProjektInf::Item::getAlertLevel()
+{
+    return this->stockpileAlert;
+}
+
 bool ProjektInf::Item::setQuantity(System::UInt16 quantity)
 {
     this->quantity = quantity;
@@ -52,6 +57,11 @@ bool ProjektInf::Item::setDecayDate(System::DateTime date)
     this->decaysOn = date;
     
     return true;
+}
+
+void ProjektInf::Item::setAlertLevel(System::UInt16 qty)
+{
+    this->stockpileAlert = qty;
 }
 
 bool ProjektInf::Item::setName(System::String^ name)

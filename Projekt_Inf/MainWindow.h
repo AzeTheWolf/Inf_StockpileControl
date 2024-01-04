@@ -96,6 +96,12 @@ namespace ProjektInf {
 	private: System::Windows::Forms::Button^ setItemExpiryBtn;
 	private: System::Windows::Forms::DateTimePicker^ itemExpiryDTP;
 	private: System::Windows::Forms::Button^ delItemExpiryBtn;
+	private: System::Windows::Forms::Button^ setNotifQtyBtn;
+	private: System::Windows::Forms::NumericUpDown^ alertQtyNUD;
+	private: System::Windows::Forms::ColumnHeader^ columnHeader6;
+
+
+
 
 
 
@@ -130,7 +136,7 @@ namespace ProjektInf {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
-			System::Windows::Forms::TreeNode^ treeNode2 = (gcnew System::Windows::Forms::TreeNode(L"Magazyn"));
+			System::Windows::Forms::TreeNode^ treeNode1 = (gcnew System::Windows::Forms::TreeNode(L"Magazyn"));
 			this->addStoreBtn = (gcnew System::Windows::Forms::Button());
 			this->delStoreBtn = (gcnew System::Windows::Forms::Button());
 			this->windowTabsTC = (gcnew System::Windows::Forms::TabControl());
@@ -150,6 +156,9 @@ namespace ProjektInf {
 			this->newStoreDescTB = (gcnew System::Windows::Forms::TextBox());
 			this->StorageViewTV = (gcnew System::Windows::Forms::TreeView());
 			this->itemsTabPage = (gcnew System::Windows::Forms::TabPage());
+			this->setNotifQtyBtn = (gcnew System::Windows::Forms::Button());
+			this->alertQtyNUD = (gcnew System::Windows::Forms::NumericUpDown());
+			this->delItemExpiryBtn = (gcnew System::Windows::Forms::Button());
 			this->setItemExpiryBtn = (gcnew System::Windows::Forms::Button());
 			this->itemExpiryDTP = (gcnew System::Windows::Forms::DateTimePicker());
 			this->setQuantityBtn = (gcnew System::Windows::Forms::Button());
@@ -166,12 +175,13 @@ namespace ProjektInf {
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->magazynTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->emptyMainTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->delItemExpiryBtn = (gcnew System::Windows::Forms::Button());
+			this->columnHeader6 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->windowTabsTC->SuspendLayout();
 			this->storageTabPage->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->groupBox1->SuspendLayout();
 			this->itemsTabPage->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->alertQtyNUD))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->itemQuantityNUD))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ErrorProvider))->BeginInit();
 			this->menuStrip1->SuspendLayout();
@@ -373,18 +383,20 @@ namespace ProjektInf {
 			this->StorageViewTV->Location = System::Drawing::Point(300, 13);
 			this->StorageViewTV->Margin = System::Windows::Forms::Padding(2);
 			this->StorageViewTV->Name = L"StorageViewTV";
-			treeNode2->BackColor = System::Drawing::Color::Gainsboro;
-			treeNode2->Checked = true;
-			treeNode2->ForeColor = System::Drawing::Color::Green;
-			treeNode2->Name = L"master";
-			treeNode2->Text = L"Magazyn";
-			this->StorageViewTV->Nodes->AddRange(gcnew cli::array< System::Windows::Forms::TreeNode^  >(1) { treeNode2 });
+			treeNode1->BackColor = System::Drawing::Color::Gainsboro;
+			treeNode1->Checked = true;
+			treeNode1->ForeColor = System::Drawing::Color::Green;
+			treeNode1->Name = L"master";
+			treeNode1->Text = L"Magazyn";
+			this->StorageViewTV->Nodes->AddRange(gcnew cli::array< System::Windows::Forms::TreeNode^  >(1) { treeNode1 });
 			this->StorageViewTV->Size = System::Drawing::Size(312, 502);
 			this->StorageViewTV->TabIndex = 8;
 			this->StorageViewTV->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::StorageViewTV_AfterSelect);
 			// 
 			// itemsTabPage
 			// 
+			this->itemsTabPage->Controls->Add(this->setNotifQtyBtn);
+			this->itemsTabPage->Controls->Add(this->alertQtyNUD);
 			this->itemsTabPage->Controls->Add(this->delItemExpiryBtn);
 			this->itemsTabPage->Controls->Add(this->setItemExpiryBtn);
 			this->itemsTabPage->Controls->Add(this->itemExpiryDTP);
@@ -399,6 +411,38 @@ namespace ProjektInf {
 			this->itemsTabPage->TabIndex = 1;
 			this->itemsTabPage->Text = L"Przedmioty";
 			this->itemsTabPage->UseVisualStyleBackColor = true;
+			// 
+			// setNotifQtyBtn
+			// 
+			this->setNotifQtyBtn->Enabled = false;
+			this->setNotifQtyBtn->Location = System::Drawing::Point(109, 413);
+			this->setNotifQtyBtn->Margin = System::Windows::Forms::Padding(2);
+			this->setNotifQtyBtn->Name = L"setNotifQtyBtn";
+			this->setNotifQtyBtn->Size = System::Drawing::Size(180, 37);
+			this->setNotifQtyBtn->TabIndex = 8;
+			this->setNotifQtyBtn->Text = L"Ustaw poziom powiadomienia";
+			this->setNotifQtyBtn->UseVisualStyleBackColor = true;
+			this->setNotifQtyBtn->Click += gcnew System::EventHandler(this, &MainWindow::setNotifQtyBtn_Click);
+			// 
+			// alertQtyNUD
+			// 
+			this->alertQtyNUD->Location = System::Drawing::Point(10, 421);
+			this->alertQtyNUD->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 65565, 0, 0, 0 });
+			this->alertQtyNUD->Name = L"alertQtyNUD";
+			this->alertQtyNUD->Size = System::Drawing::Size(90, 20);
+			this->alertQtyNUD->TabIndex = 7;
+			// 
+			// delItemExpiryBtn
+			// 
+			this->delItemExpiryBtn->Enabled = false;
+			this->delItemExpiryBtn->Location = System::Drawing::Point(201, 369);
+			this->delItemExpiryBtn->Margin = System::Windows::Forms::Padding(2);
+			this->delItemExpiryBtn->Name = L"delItemExpiryBtn";
+			this->delItemExpiryBtn->Size = System::Drawing::Size(88, 37);
+			this->delItemExpiryBtn->TabIndex = 6;
+			this->delItemExpiryBtn->Text = L"Usuñ datê wa¿noœci";
+			this->delItemExpiryBtn->UseVisualStyleBackColor = true;
+			this->delItemExpiryBtn->Click += gcnew System::EventHandler(this, &MainWindow::delItemExpiryBtn_Click);
 			// 
 			// setItemExpiryBtn
 			// 
@@ -427,7 +471,7 @@ namespace ProjektInf {
 			this->setQuantityBtn->Location = System::Drawing::Point(109, 333);
 			this->setQuantityBtn->Margin = System::Windows::Forms::Padding(2);
 			this->setQuantityBtn->Name = L"setQuantityBtn";
-			this->setQuantityBtn->Size = System::Drawing::Size(88, 27);
+			this->setQuantityBtn->Size = System::Drawing::Size(180, 27);
 			this->setQuantityBtn->TabIndex = 3;
 			this->setQuantityBtn->Text = L"Ustaw iloœæ";
 			this->setQuantityBtn->UseVisualStyleBackColor = true;
@@ -456,9 +500,9 @@ namespace ProjektInf {
 			// 
 			// itemList
 			// 
-			this->itemList->Columns->AddRange(gcnew cli::array< System::Windows::Forms::ColumnHeader^  >(5) {
+			this->itemList->Columns->AddRange(gcnew cli::array< System::Windows::Forms::ColumnHeader^  >(6) {
 				this->columnHeader1, this->columnHeader2,
-					this->columnHeader3, this->columnHeader4, this->columnHeader5
+					this->columnHeader3, this->columnHeader4, this->columnHeader5, this->columnHeader6
 			});
 			this->itemList->FullRowSelect = true;
 			this->itemList->HideSelection = false;
@@ -522,17 +566,10 @@ namespace ProjektInf {
 			this->emptyMainTSMI->Text = L"Opró¿nij magazyn g³ówny";
 			this->emptyMainTSMI->Click += gcnew System::EventHandler(this, &MainWindow::emptyMainTSMI_Click);
 			// 
-			// delItemExpiryBtn
+			// columnHeader6
 			// 
-			this->delItemExpiryBtn->Enabled = false;
-			this->delItemExpiryBtn->Location = System::Drawing::Point(201, 369);
-			this->delItemExpiryBtn->Margin = System::Windows::Forms::Padding(2);
-			this->delItemExpiryBtn->Name = L"delItemExpiryBtn";
-			this->delItemExpiryBtn->Size = System::Drawing::Size(88, 37);
-			this->delItemExpiryBtn->TabIndex = 6;
-			this->delItemExpiryBtn->Text = L"Usuñ datê wa¿noœci";
-			this->delItemExpiryBtn->UseVisualStyleBackColor = true;
-			this->delItemExpiryBtn->Click += gcnew System::EventHandler(this, &MainWindow::delItemExpiryBtn_Click);
+			this->columnHeader6->Text = L"Ostrze¿ gdy";
+			this->columnHeader6->Width = 85;
 			// 
 			// MainWindow
 			// 
@@ -553,6 +590,7 @@ namespace ProjektInf {
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
 			this->itemsTabPage->ResumeLayout(false);
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->alertQtyNUD))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->itemQuantityNUD))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ErrorProvider))->EndInit();
 			this->menuStrip1->ResumeLayout(false);
@@ -742,6 +780,7 @@ namespace ProjektInf {
 		listItem->SubItems->Add(L"-");
 		listItem->SubItems->Add(L"");
 		listItem->SubItems->Add(item->getDescription());
+		listItem->SubItems->Add(L"0");
 		listItem->Tag = item;
 		this->itemList->Items->Add(listItem);
 
@@ -903,6 +942,7 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 			this->setQuantityBtn->Enabled = false;
 			this->setItemExpiryBtn->Enabled = false;
 			this->delItemExpiryBtn->Enabled = false;
+			this->setNotifQtyBtn->Enabled = false;
 			return;
 		}
 		
@@ -910,6 +950,7 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 		this->setQuantityBtn->Enabled = true;
 		this->setItemExpiryBtn->Enabled = true;
 		this->delItemExpiryBtn->Enabled = true;
+		this->setNotifQtyBtn->Enabled = true;
 
 		Item^ item = dynamic_cast<Item^>(this->itemList->SelectedItems[0]->Tag);
 
@@ -956,6 +997,15 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		item->setQuantity(static_cast<System::UInt16>(this->itemQuantityNUD->Value));
 		this->itemList->SelectedItems[0]->SubItems[1]->Text = item->getQuantity().ToString();
+
+		if (item->getQuantity() <= item->getAlertLevel())
+		{
+			this->itemList->SelectedItems[0]->ForeColor = System::Drawing::Color::Red;
+		}
+		else
+		{
+			this->itemList->SelectedItems[0]->ForeColor = System::Drawing::Color::Black;
+		}
 	}
 
 	private: System::Void setItemExpiryBtn_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -1008,6 +1058,41 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		item->setDecayDate(System::DateTime(9999, 1, 1, 0, 0, 0, 0));
 		this->itemList->SelectedItems[0]->SubItems[2]->Text = L"-";
+	}
+	private: System::Void setNotifQtyBtn_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (this->itemList->SelectedItems->Count < 1) return;
+
+		clearErrors();
+
+		Item^ item = dynamic_cast<Item^>(this->itemList->SelectedItems[0]->Tag);
+
+		if (item == nullptr)
+		{
+			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
+			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
+
+			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
+			{
+				return;
+			}
+			else
+			{
+				Application::Exit();
+			}
+		}
+
+		item->setAlertLevel(System::Decimal::ToUInt16(this->alertQtyNUD->Value));
+		this->itemList->SelectedItems[0]->SubItems[5]->Text = this->alertQtyNUD->Value.ToString();
+
+		if (item->getQuantity() <= item->getAlertLevel())
+		{
+			this->itemList->SelectedItems[0]->ForeColor = System::Drawing::Color::Red;
+		}
+		else
+		{
+			this->itemList->SelectedItems[0]->ForeColor = System::Drawing::Color::Black;
+		}
 	}
 };
 }
