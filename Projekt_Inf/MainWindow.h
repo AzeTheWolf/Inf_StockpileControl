@@ -3,6 +3,7 @@
 #include "ProgramState.h"
 #include "Item.h"
 #include "Compartment.h"
+#include "Helpers.h"
 
 namespace ProjektInf {
 
@@ -811,6 +812,7 @@ namespace ProjektInf {
 		listItem->SubItems->Add(item->getDescription());
 		listItem->SubItems->Add(L"0");
 		listItem->Tag = item;
+		listItem->Name = item->getName();
 		this->itemList->Items->Add(listItem);
 
 		// Clean inputs
@@ -899,18 +901,26 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		this->itemList->BeginUpdate();
 
-		auto list = target->getItems();
+		auto listItems = target->getItems(); // All items in selected Compartment
+		auto list = this->itemList->Items; // All items displayed in list
 
-		for each (ListViewItem ^ item in this->itemList->Items)
+		// for each item in selected Compartment
+		for each (Item ^ item in listItems)
 		{
-			Item^ tag = dynamic_cast<Item^>(item->Tag);
+			// get all items of given name from list
+			array<ListViewItem^>^ lvi = list->Find(item->getName(), false);
+			if (lvi->Length < 1) return;
 
-			if (tag == nullptr || list->BinarySearch(tag) < 0)
+			// find in lvi items with same tag
+			ListViewItem^ found = 
+				lvi->Find(lvi, gcnew System::Predicate<ListViewItem^>(gcnew FindListViewItem(item), &FindListViewItem::isIn));
+
+			// if found (default LVI^ has no tag)
+			if (found->Tag == item)
 			{
-				this->itemList->Items->Remove(item);
+				this->itemList->Items->Remove(found);
 			}
 		}
-
 		this->itemList->EndUpdate();
 
 		target->zero();
