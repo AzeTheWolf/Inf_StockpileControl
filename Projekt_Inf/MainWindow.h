@@ -687,22 +687,8 @@ namespace Program {
 		// guard: cast failed
 		if (targetStorage == nullptr)
 		{
-			System::String^ errMsg = L"Aplikacja napotka³a niespodziewany problem";
-			System::String^ cap = L"Wybrany element nie zawiera prawid³owego wska¿nika";
-
-			auto errbox = MessageBox::Show(
-				errMsg, cap,
-				MessageBoxButtons::OKCancel,
-				MessageBoxIcon::Error
-			);
-			if (errbox == System::Windows::Forms::DialogResult::OK)
-			{
-				return;
-			}
-			else
-			{
-				Application::Exit();
-			}
+			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			return;
 		}
 
 		// Create new Container
@@ -773,17 +759,8 @@ namespace Program {
 		// guard: cast failed
 		if (targetStorage == nullptr)
 		{
-			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
-			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
-
-			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
-			{
-				return;
-			}
-			else
-			{
-				Application::Exit();
-			}
+			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			return;
 		}
 
 		// Create new Container
@@ -881,17 +858,8 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		if (target == nullptr)
 		{
-			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
-			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
-
-			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
-			{
-				return;
-			}
-			else
-			{
-				Application::Exit();
-			}
+			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			return;
 		}
 
 		if (!ProgramState::confirmBox(
@@ -942,17 +910,8 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		if (item == nullptr)
 		{
-			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
-			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
-
-			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
-			{
-				return;
-			}
-			else
-			{
-				Application::Exit();
-			}
+			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			return;
 		}
 
 		MessageBox::Show(
@@ -984,17 +943,8 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		if (item == nullptr)
 		{
-			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
-			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
-
-			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
-			{
-				return;
-			}
-			else
-			{
-				Application::Exit();
-			}
+			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			return;
 		}
 
 		this->itemQuantityNUD->Value = item->getQuantity();
@@ -1010,17 +960,8 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		if (item == nullptr)
 		{
-			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
-			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
-
-			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
-			{
-				return;
-			}
-			else
-			{
-				Application::Exit();
-			}
+			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			return;
 		}
 
 		item->setQuantity(static_cast<System::UInt16>(this->itemQuantityNUD->Value));
@@ -1045,17 +986,8 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		if (item == nullptr)
 		{
-			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
-			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
-
-			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
-			{
-				return;
-			}
-			else
-			{
-				Application::Exit();
-			}
+			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			return;
 		}
 
 		item->setDecayDate(this->itemExpiryDTP->Value);
@@ -1084,17 +1016,8 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		if (item == nullptr)
 		{
-			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
-			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
-
-			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
-			{
-				return;
-			}
-			else
-			{
-				Application::Exit();
-			}
+			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			return;
 		}
 
 		item->setDecayDate(System::DateTime(9999, 1, 1, 0, 0, 0, 0));
@@ -1111,17 +1034,8 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		if (item == nullptr)
 		{
-			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
-			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
-
-			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
-			{
-				return;
-			}
-			else
-			{
-				Application::Exit();
-			}
+			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			return;
 		}
 
 		item->setAlertLevel(System::Decimal::ToUInt16(this->alertQtyNUD->Value));
@@ -1195,17 +1109,8 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		if (target == nullptr)
 		{
-			System::String^ cap = L"Aplikacja napotka³a niespodziewany problem";
-			System::String^ errMsg = L"Wybrany element nie zawiera prawid³owego wska¿nika";
-
-			if (ProgramState::confirmBox(cap, errMsg, MessageBoxIcon::Error))
-			{
-				return;
-			}
-			else
-			{
-				Application::Exit();
-			}
+			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			return;
 		}
 
 		this->itemList->BeginUpdate();
