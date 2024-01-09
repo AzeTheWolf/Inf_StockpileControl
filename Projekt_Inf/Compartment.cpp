@@ -1,7 +1,7 @@
 #include "Compartment.h"
 #include "ProgramState.h"
 
-using namespace ProjektInf;
+using namespace Program;
 
 Compartment::Compartment(System::String^ displayName, System::String^ description)
 {
@@ -45,17 +45,17 @@ bool Compartment::setDescription(System::String^ description)
     return true;
 }
 
-CStore^ ProjektInf::Compartment::parent()
+CStore^ Compartment::parent()
 {
     return this->location;
 }
 
-void ProjektInf::Compartment::setParent(CStore^ parent)
+void Compartment::setParent(CStore^ parent)
 {
     this->location = parent;
 }
 
-System::String^ ProjektInf::Compartment::getPath()
+System::String^ Compartment::getPath()
 {
     System::String^ parentPath;
     Compartment^ loc = dynamic_cast<Compartment^>(this->location);

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ProjektInf {
+namespace Program {
 	ref class CStore;
 	ref class Item;
 

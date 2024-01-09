@@ -122,14 +122,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Compartment.cpp" />
-    <ClCompile Include="Helpers.cpp" />
+    <ClCompile Include="ComponentMutator.cpp" />
+    <ClCompile Include="Finders.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Storage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Compartment.h" />
-    <ClInclude Include="Helpers.h" />
+    <ClInclude Include="ComponentMutator.h" />
+    <ClInclude Include="Finders.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="MainWindow.h">
       <FileType>CppForm</FileType>

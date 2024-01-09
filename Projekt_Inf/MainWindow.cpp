@@ -9,7 +9,7 @@ void Main(array<String^>^ args)
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 	//ProjektInf::MainWindow form;
-	ProjektInf::MainWindow^ form = gcnew ProjektInf::MainWindow;
+	Program::MainWindow^ form = gcnew Program::MainWindow;
 	Application::Run(form);
 	return;
 }

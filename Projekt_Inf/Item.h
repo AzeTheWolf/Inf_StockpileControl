@@ -3,7 +3,7 @@
 #include "Storage.h"
 #include "IPlaceable.h"
 
-namespace ProjektInf {
+namespace Program {
 
 	ref class Item : IPlaceable
 	{

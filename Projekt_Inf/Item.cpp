@@ -2,7 +2,7 @@
 #include "ProgramState.h"
 #include "Compartment.h"
 
-using namespace ProjektInf;
+using namespace Program;
 
 Item::Item(System::String^ displayName, System::String^ description, System::UInt16 quantity)
 {
@@ -20,12 +20,12 @@ void Item::zero()
     this->quantity = 0;
 }
 
-System::String^ ProjektInf::Item::getDescription()
+System::String^ Item::getDescription()
 {
     return this->description;
 }
 
-System::String^ ProjektInf::Item::getName()
+System::String^ Item::getName()
 {
     return this->displayName;
 }
@@ -35,36 +35,36 @@ System::UInt16 Item::getQuantity()
     return this->quantity;
 }
 
-System::DateTime ProjektInf::Item::getDecayDate()
+System::DateTime Item::getDecayDate()
 {
     return this->decaysOn;
 }
 
-System::UInt16 ProjektInf::Item::getAlertLevel()
+System::UInt16 Item::getAlertLevel()
 {
     return this->stockpileAlert;
 }
 
-bool ProjektInf::Item::setQuantity(System::UInt16 quantity)
+bool Item::setQuantity(System::UInt16 quantity)
 {
     this->quantity = quantity;
     
     return true;
 }
 
-bool ProjektInf::Item::setDecayDate(System::DateTime date)
+bool Item::setDecayDate(System::DateTime date)
 {
     this->decaysOn = date;
     
     return true;
 }
 
-void ProjektInf::Item::setAlertLevel(System::UInt16 qty)
+void Item::setAlertLevel(System::UInt16 qty)
 {
     this->stockpileAlert = qty;
 }
 
-bool ProjektInf::Item::setName(System::String^ name)
+bool Item::setName(System::String^ name)
 {
     if (System::String::IsNullOrWhiteSpace(name)) return false;
 
@@ -72,7 +72,7 @@ bool ProjektInf::Item::setName(System::String^ name)
     return true;
 }
 
-bool ProjektInf::Item::setDescription(System::String^ description)
+bool Item::setDescription(System::String^ description)
 {
     if (description == nullptr) return false;
 
@@ -80,25 +80,25 @@ bool ProjektInf::Item::setDescription(System::String^ description)
     return true;
 }
 
-CStore^ ProjektInf::Item::parent()
+CStore^ Item::parent()
 {
     return this->location;
 }
 
-void ProjektInf::Item::setParent(CStore^ parent)
+void Item::setParent(CStore^ parent)
 {
     this->location = parent;
 }
 
 
-System::Collections::Generic::List<Item^>^ ProjektInf::Item::getItems()
+System::Collections::Generic::List<Item^>^ Item::getItems()
 {
     auto list = gcnew System::Collections::Generic::List<Item^>;
     list->Add(this);
     return list;
 }
 
-System::String^ ProjektInf::Item::getPath()
+System::String^ Item::getPath()
 {
     System::String^ parentPath;
     Compartment^ loc = dynamic_cast<Compartment^>(this->location);

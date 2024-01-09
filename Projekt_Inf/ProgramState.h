@@ -1,7 +1,7 @@
 #pragma once
 #include "Storage.h"
 
-namespace ProjektInf {
+namespace Program {
 
 	using namespace System::Windows::Forms;
 

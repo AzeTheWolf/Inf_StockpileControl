@@ -3,9 +3,9 @@
 #include "ProgramState.h"
 #include "Item.h"
 #include "Compartment.h"
-#include "Helpers.h"
+#include "Finders.h"
 
-namespace ProjektInf {
+namespace Program {
 
 	using namespace System;
 	using namespace System::ComponentModel;
@@ -913,7 +913,7 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 			// find in lvi items with same tag
 			ListViewItem^ found = 
-				lvi->Find(lvi, gcnew System::Predicate<ListViewItem^>(gcnew FindListViewItem(item), &FindListViewItem::isIn));
+				lvi->Find(lvi, gcnew System::Predicate<ListViewItem^>(gcnew Helpers::FindListViewItem(item), &Helpers::FindListViewItem::isIn));
 
 			// if found (default LVI^ has no tag)
 			if (found->Tag == item)
@@ -1233,7 +1233,7 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 			// find in lvi items with same tag
 			ListViewItem^ found =
-				lvi->Find(lvi, gcnew System::Predicate<ListViewItem^>(gcnew FindListViewItem(item), &FindListViewItem::isIn));
+				lvi->Find(lvi, gcnew System::Predicate<ListViewItem^>(gcnew Helpers::FindListViewItem(item), &Helpers::FindListViewItem::isIn));
 
 			// if not found (default LVI^ has no tag)
 			if (found->Tag == item)

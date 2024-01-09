@@ -2,9 +2,9 @@
 #include "IPlaceable.h"
 #include "Item.h"
 
-using namespace ProjektInf;
+using namespace Program;
 
-ProjektInf::CStore::CStore()
+Program::CStore::CStore()
 {
 	this->contents = gcnew System::Collections::Generic::List<IPlaceable^>();
 }
@@ -21,13 +21,13 @@ void CStore::remove(IPlaceable^ object)
 	object->setParent(nullptr);
 }
 
-void ProjektInf::CStore::sendTo(IPlaceable^ item, CStore^ other)
+void Program::CStore::sendTo(IPlaceable^ item, CStore^ other)
 {
 	other->place(item);
 	this->contents->Remove(item);
 }
 
-System::Collections::Generic::List<Item^>^ ProjektInf::CStore::getItems()
+System::Collections::Generic::List<Item^>^ Program::CStore::getItems()
 {
 	auto list = gcnew System::Collections::Generic::List<Item^>;
 	for each (Item ^ item in this->contents)
