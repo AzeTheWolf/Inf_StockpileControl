@@ -11,11 +11,8 @@ ProjektInf::CStore::CStore()
 
 void CStore::place(IPlaceable^ object)
 {
-	//if (this->contents->BinarySearch(object) < 0)
-	{
-		this->contents->Add(object);
-		object->setParent(this);
-	}
+	this->contents->Add(object);
+	object->setParent(this);
 }
 
 void CStore::remove(IPlaceable^ object)
