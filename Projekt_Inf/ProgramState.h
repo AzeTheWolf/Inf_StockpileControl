@@ -16,7 +16,7 @@ namespace Program {
 			return box == System::Windows::Forms::DialogResult::OK;
 		}
 
-		static bool handleError(System::String^ message)
+		static System::Void handleError(System::String^ message)
 		{
 			auto box = MessageBox::Show(
 				L"Aplikacja napotka³a niespodziewany b³¹d!", 

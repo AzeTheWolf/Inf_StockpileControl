@@ -3,7 +3,6 @@
 #include "ProgramState.h"
 #include "Item.h"
 #include "Compartment.h"
-#include "Finders.h"
 #include "ComponentMutator.h"
 
 namespace Program {
@@ -871,7 +870,6 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 		this->itemList->BeginUpdate();
 
 		auto listItems = target->getItems(); // All items in selected Compartment
-		auto list = this->itemList->Items; // All items displayed in list
 
 		// for each item in selected Compartment
 		for each (Item ^ item in listItems)
@@ -1116,7 +1114,6 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 		this->itemList->BeginUpdate();
 
 		auto listItems = target->getItems(); // All items in selected Compartment
-		auto list = this->itemList->Items; // All items displayed in list
 
 		// for each item in selected Compartment
 		for each (Item ^ item in listItems)
