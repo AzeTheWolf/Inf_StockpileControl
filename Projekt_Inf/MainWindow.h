@@ -4,6 +4,7 @@
 #include "Item.h"
 #include "Compartment.h"
 #include "Finders.h"
+#include "ComponentMutator.h"
 
 namespace Program {
 
@@ -907,19 +908,7 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 		// for each item in selected Compartment
 		for each (Item ^ item in listItems)
 		{
-			// get all items of given name from list
-			array<ListViewItem^>^ lvi = list->Find(item->getName(), false);
-			if (lvi->Length < 1) return;
-
-			// find in lvi items with same tag
-			ListViewItem^ found = 
-				lvi->Find(lvi, gcnew System::Predicate<ListViewItem^>(gcnew Helpers::FindListViewItem(item), &Helpers::FindListViewItem::isIn));
-
-			// if found (default LVI^ has no tag)
-			if (found->Tag == item)
-			{
-				this->itemList->Items->Remove(found);
-			}
+			ComponentMutator::removeFromListView(this->itemList, item);
 		}
 		this->itemList->EndUpdate();
 
@@ -1227,19 +1216,7 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 		// for each item in selected Compartment
 		for each (Item ^ item in listItems)
 		{
-			// get all items of given name from list
-			array<ListViewItem^>^ lvi = list->Find(item->getName(), false);
-			if (lvi->Length < 1) return;
-
-			// find in lvi items with same tag
-			ListViewItem^ found =
-				lvi->Find(lvi, gcnew System::Predicate<ListViewItem^>(gcnew Helpers::FindListViewItem(item), &Helpers::FindListViewItem::isIn));
-
-			// if not found (default LVI^ has no tag)
-			if (found->Tag == item)
-			{
-				this->itemList->Items->Remove(found);
-			}
+			ComponentMutator::removeFromListView(this->itemList, item);
 		}
 		this->itemList->EndUpdate();
 

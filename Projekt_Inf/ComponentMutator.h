@@ -6,7 +6,8 @@ namespace Program
 
 	ref class ComponentMutator sealed
 	{
-		void removeFromListView(System::Windows::Forms::ListView^ component, Item^ item);
+	public:
+		static void removeFromListView(System::Windows::Forms::ListView^ component, Item^ item);
 	};
 }
 
