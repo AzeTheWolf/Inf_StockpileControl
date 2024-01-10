@@ -286,6 +286,7 @@ namespace Program {
 			this->delItemBtn->TabIndex = 2;
 			this->delItemBtn->Text = L"Usuñ przedmiot";
 			this->delItemBtn->UseVisualStyleBackColor = true;
+			this->delItemBtn->Click += gcnew System::EventHandler(this, &MainWindow::delItemBtn_Click);
 			// 
 			// addItemBtn
 			// 
@@ -431,7 +432,7 @@ namespace Program {
 			// alertQtyNUD
 			// 
 			this->alertQtyNUD->Location = System::Drawing::Point(13, 518);
-			this->alertQtyNUD->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			this->alertQtyNUD->Margin = System::Windows::Forms::Padding(4);
 			this->alertQtyNUD->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 65565, 0, 0, 0 });
 			this->alertQtyNUD->Name = L"alertQtyNUD";
 			this->alertQtyNUD->Size = System::Drawing::Size(120, 22);
@@ -465,7 +466,7 @@ namespace Program {
 			// 
 			this->itemExpiryDTP->Format = System::Windows::Forms::DateTimePickerFormat::Short;
 			this->itemExpiryDTP->Location = System::Drawing::Point(13, 465);
-			this->itemExpiryDTP->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			this->itemExpiryDTP->Margin = System::Windows::Forms::Padding(4);
 			this->itemExpiryDTP->MinDate = System::DateTime(2024, 1, 1, 0, 0, 0, 0);
 			this->itemExpiryDTP->Name = L"itemExpiryDTP";
 			this->itemExpiryDTP->Size = System::Drawing::Size(119, 22);
@@ -513,7 +514,7 @@ namespace Program {
 			this->itemList->FullRowSelect = true;
 			this->itemList->HideSelection = false;
 			this->itemList->Location = System::Drawing::Point(5, 4);
-			this->itemList->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			this->itemList->Margin = System::Windows::Forms::Padding(4);
 			this->itemList->MultiSelect = false;
 			this->itemList->Name = L"itemList";
 			this->itemList->Size = System::Drawing::Size(1241, 392);
@@ -639,6 +640,13 @@ namespace Program {
 			this->ErrorProvider->SetError(this->newStoreNameTB, nullptr);
 			this->ErrorProvider->SetError(this->StorageViewTV, nullptr);
 			this->ErrorProvider->SetError(this->newItemNameTB, nullptr);
+		}
+
+		private: void lockStructTabBtns()
+		{
+			this->delItemBtn->Enabled = false;
+			this->delStoreBtn->Enabled = false;
+			this->emptyStoreBtn->Enabled = false;
 		}
 
 		/**
@@ -813,21 +821,14 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 			return;
 		}
 
-		if (this->StorageViewTV->SelectedNode->Tag->GetType()->Name == "Compartment")
-		{
-			this->delItemBtn->Enabled = false;
-			this->delStoreBtn->Enabled = true;
-			this->emptyStoreBtn->Enabled = true;
-			return;
-		}
+		bool isCompartment =
+			this->StorageViewTV->SelectedNode->Tag->GetType()->Name == "Compartment";
+		bool isItem = this->StorageViewTV->SelectedNode->Tag->GetType()->Name == "Item";
 
-		if (this->StorageViewTV->SelectedNode->Tag->GetType()->Name == "Item")
-		{
-			this->delItemBtn->Enabled = true;
-			this->delStoreBtn->Enabled = false;
-			this->emptyStoreBtn->Enabled = false;
-			return;
-		}
+		this->delItemBtn->Enabled = isItem;
+		this->delStoreBtn->Enabled = isCompartment;
+		this->emptyStoreBtn->Enabled = isCompartment;
+
 	}
 	private: System::Void emptyStoreBtn_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -1087,6 +1088,7 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 	private: System::Void delStoreBtn_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 		clearErrors();
+
 		if (!ProgramState::confirmBox(
 			L"Potwierdzenie",
 			L"Czy na pewno chcesz usun¹æ pojemnik i ca³¹ jego zawartoœæ? Tej czynnoœci nie mo¿na cofn¹æ",
@@ -1115,7 +1117,6 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		auto listItems = target->getItems(); // All items in selected Compartment
 
-		// for each item in selected Compartment
 		for each (Item ^ item in listItems)
 		{
 			ComponentMutator::removeFromListView(this->itemList, item);
@@ -1124,6 +1125,39 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		target->parent()->remove(target);
 		selNode->Remove();
+
+		lockStructTabBtns();
+	}
+
+	private: System::Void delItemBtn_Click(System::Object^ sender, System::EventArgs^ e) {
+		clearErrors();
+
+		if (this->StorageViewTV->SelectedNode == nullptr)
+		{
+			this->ErrorProvider->SetError(
+				this->StorageViewTV,
+				L"Wybierz, który przedmiot usun¹æ"
+			);
+		}
+
+		TreeNode^ selNode = this->StorageViewTV->SelectedNode;
+		Item^ target = dynamic_cast<Item^>(selNode->Tag);
+
+		if (target == nullptr)
+		{
+			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wskaŸnika.");
+			return;
+		}
+
+		target->parent()->remove(target);
+		selNode->Remove();
+		ComponentMutator::removeFromListView(this->itemList, target);
+		
+		lockStructTabBtns();
 	}
 };
 }
+
+// TODOS:
+// Do not deselect tree node after structure modified
+// Warnings tab
