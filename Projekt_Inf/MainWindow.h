@@ -720,6 +720,8 @@ namespace Program {
 		// Clean inputs
 		this->newStoreNameTB->Clear();
 		this->newStoreDescTB->Clear();
+
+		this->StorageViewTV->SelectedNode = selNode;
 	}
 
 
@@ -803,12 +805,15 @@ namespace Program {
 		// Clean inputs
 		this->newItemNameTB->Clear();
 		this->newItemDescTB->Clear();
+
+		this->StorageViewTV->SelectedNode = selNode;
 	}
 
-private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^ e) 
-{
-	this->StorageViewTV->Nodes[0]->Tag = ProgramState::masterStorage;
-}
+	private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^ e) 
+	{
+		this->StorageViewTV->Nodes[0]->Tag = ProgramState::masterStorage;
+		this->StorageViewTV->SelectedNode = this->StorageViewTV->Nodes[0];
+	}
 
 	private: System::Void StorageViewTV_AfterSelect(System::Object^ sender, System::Windows::Forms::TreeViewEventArgs^ e)
 	{
@@ -881,6 +886,8 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		target->zero();
 		selNode->Nodes->Clear();
+
+		this->StorageViewTV->SelectedNode = selNode;
 	}
 	
 	private: System::Void emptyMainTSMI_Click(System::Object^ sender, System::EventArgs^ e)
@@ -899,6 +906,7 @@ private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^
 
 		this->StorageViewTV->Nodes[0]->Nodes->Clear();
 		this->itemList->Items->Clear();
+		this->StorageViewTV->SelectedNode = this->StorageViewTV->Nodes[0];
 	}
 	
 	private: System::Void findItemBtn_Click(System::Object^ sender, System::EventArgs^ e) 
