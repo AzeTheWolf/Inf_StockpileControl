@@ -100,7 +100,8 @@ namespace Program {
 	private: System::Windows::Forms::Button^ setNotifQtyBtn;
 	private: System::Windows::Forms::NumericUpDown^ alertQtyNUD;
 	private: System::Windows::Forms::ColumnHeader^ columnHeader6;
-	private: System::Windows::Forms::ToolStripMenuItem^ odœwie¿ToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ refreshStoreTSMI;
+
 	private: System::Windows::Forms::ToolStripMenuItem^ przedmiotToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ odœwie¿ToolStripMenuItem1;
 
@@ -180,7 +181,7 @@ namespace Program {
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->magazynTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->emptyMainTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->odœwie¿ToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->refreshStoreTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->przedmiotToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->odœwie¿ToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->windowTabsTC->SuspendLayout();
@@ -569,7 +570,7 @@ namespace Program {
 			// 
 			this->magazynTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
 				this->emptyMainTSMI,
-					this->odœwie¿ToolStripMenuItem
+					this->refreshStoreTSMI
 			});
 			this->magazynTSMI->Name = L"magazynTSMI";
 			this->magazynTSMI->Size = System::Drawing::Size(83, 24);
@@ -582,11 +583,12 @@ namespace Program {
 			this->emptyMainTSMI->Text = L"Opró¿nij magazyn g³ówny";
 			this->emptyMainTSMI->Click += gcnew System::EventHandler(this, &MainWindow::emptyMainTSMI_Click);
 			// 
-			// odœwie¿ToolStripMenuItem
+			// refreshStoreTSMI
 			// 
-			this->odœwie¿ToolStripMenuItem->Name = L"odœwie¿ToolStripMenuItem";
-			this->odœwie¿ToolStripMenuItem->Size = System::Drawing::Size(265, 26);
-			this->odœwie¿ToolStripMenuItem->Text = L"Odœwie¿";
+			this->refreshStoreTSMI->Name = L"refreshStoreTSMI";
+			this->refreshStoreTSMI->Size = System::Drawing::Size(265, 26);
+			this->refreshStoreTSMI->Text = L"Odœwie¿";
+			this->refreshStoreTSMI->Click += gcnew System::EventHandler(this, &MainWindow::refreshStoreTSMI_Click);
 			// 
 			// przedmiotToolStripMenuItem
 			// 
@@ -598,7 +600,7 @@ namespace Program {
 			// odœwie¿ToolStripMenuItem1
 			// 
 			this->odœwie¿ToolStripMenuItem1->Name = L"odœwie¿ToolStripMenuItem1";
-			this->odœwie¿ToolStripMenuItem1->Size = System::Drawing::Size(148, 26);
+			this->odœwie¿ToolStripMenuItem1->Size = System::Drawing::Size(224, 26);
 			this->odœwie¿ToolStripMenuItem1->Text = L"Odœwie¿";
 			this->odœwie¿ToolStripMenuItem1->Click += gcnew System::EventHandler(this, &MainWindow::odœwie¿ToolStripMenuItem1_Click);
 			// 
@@ -705,12 +707,9 @@ namespace Program {
 		);
 
 		// Create associated TreeNode
-		TreeNode^ node = gcnew TreeNode();
-		node->Text = item->getName();
-		node->ToolTipText = item->getDescription();
-		node->Tag = item;
-		node->BackColor = System::Drawing::Color::Gainsboro;
-		node->ForeColor = System::Drawing::Color::Green;
+		TreeNode^ node = ComponentMutator::createTreeNode(item, true);
+
+		
 
 		// Put in master storage and add to graph
 		targetStorage->place(item);
@@ -780,10 +779,7 @@ namespace Program {
 		);
 
 		// Create associated TreeNode
-		TreeNode^ node = gcnew TreeNode();
-		node->Text = item->getName();
-		node->ToolTipText = item->getDescription();
-		node->Tag = item;
+		TreeNode^ node = ComponentMutator::createTreeNode(item, false);
 
 		// Put in master storage and add to graph
 		targetStorage->place(item);
@@ -1162,6 +1158,17 @@ namespace Program {
 		ComponentMutator::removeFromListView(this->itemList, target);
 		
 		lockStructTabBtns();
+	}
+	
+	private: System::Void refreshStoreTSMI_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		this->StorageViewTV->BeginUpdate();
+
+		TreeNode^ root = this->StorageViewTV->Nodes[0];
+		root->Nodes->Clear();
+		ComponentMutator::addChildrenToNode(root, ProgramState::masterStorage->getContents());
+
+		this->StorageViewTV->EndUpdate();
 	}
 };
 }

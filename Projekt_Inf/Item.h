@@ -5,7 +5,7 @@
 
 namespace Program {
 
-	ref class Item : IPlaceable
+	ref class Item : Program::IPlaceable
 	{
 	protected:
 		System::UInt16 quantity;
