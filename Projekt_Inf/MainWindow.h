@@ -101,9 +101,12 @@ namespace Program {
 	private: System::Windows::Forms::NumericUpDown^ alertQtyNUD;
 	private: System::Windows::Forms::ColumnHeader^ columnHeader6;
 	private: System::Windows::Forms::ToolStripMenuItem^ refreshStoreTSMI;
+	private: System::Windows::Forms::ToolStripMenuItem^ itemTSMI;
 
-	private: System::Windows::Forms::ToolStripMenuItem^ przedmiotToolStripMenuItem;
+
 	private: System::Windows::Forms::ToolStripMenuItem^ odœwie¿ToolStripMenuItem1;
+	private: System::Windows::Forms::ToolStripMenuItem^ delAllItemsTSMI;
+
 
 
 
@@ -182,8 +185,9 @@ namespace Program {
 			this->magazynTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->emptyMainTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->refreshStoreTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->przedmiotToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->itemTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->odœwie¿ToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->delAllItemsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->windowTabsTC->SuspendLayout();
 			this->storageTabPage->SuspendLayout();
 			this->groupBox2->SuspendLayout();
@@ -558,7 +562,7 @@ namespace Program {
 			// menuStrip1
 			// 
 			this->menuStrip1->ImageScalingSize = System::Drawing::Size(20, 20);
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->magazynTSMI, this->przedmiotToolStripMenuItem });
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->magazynTSMI, this->itemTSMI });
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
 			this->menuStrip1->Padding = System::Windows::Forms::Padding(5, 2, 0, 2);
@@ -590,12 +594,15 @@ namespace Program {
 			this->refreshStoreTSMI->Text = L"Odœwie¿";
 			this->refreshStoreTSMI->Click += gcnew System::EventHandler(this, &MainWindow::refreshStoreTSMI_Click);
 			// 
-			// przedmiotToolStripMenuItem
+			// itemTSMI
 			// 
-			this->przedmiotToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->odœwie¿ToolStripMenuItem1 });
-			this->przedmiotToolStripMenuItem->Name = L"przedmiotToolStripMenuItem";
-			this->przedmiotToolStripMenuItem->Size = System::Drawing::Size(91, 24);
-			this->przedmiotToolStripMenuItem->Text = L"Przedmiot";
+			this->itemTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->odœwie¿ToolStripMenuItem1,
+					this->delAllItemsTSMI
+			});
+			this->itemTSMI->Name = L"itemTSMI";
+			this->itemTSMI->Size = System::Drawing::Size(91, 24);
+			this->itemTSMI->Text = L"Przedmiot";
 			// 
 			// odœwie¿ToolStripMenuItem1
 			// 
@@ -603,6 +610,13 @@ namespace Program {
 			this->odœwie¿ToolStripMenuItem1->Size = System::Drawing::Size(224, 26);
 			this->odœwie¿ToolStripMenuItem1->Text = L"Odœwie¿";
 			this->odœwie¿ToolStripMenuItem1->Click += gcnew System::EventHandler(this, &MainWindow::odœwie¿ToolStripMenuItem1_Click);
+			// 
+			// delAllItemsTSMI
+			// 
+			this->delAllItemsTSMI->Name = L"delAllItemsTSMI";
+			this->delAllItemsTSMI->Size = System::Drawing::Size(224, 26);
+			this->delAllItemsTSMI->Text = L"Usuñ wszystkie";
+			this->delAllItemsTSMI->Click += gcnew System::EventHandler(this, &MainWindow::delAllItemsTSMI_Click);
 			// 
 			// MainWindow
 			// 
@@ -1170,9 +1184,27 @@ namespace Program {
 
 		this->StorageViewTV->EndUpdate();
 	}
-};
-}
+	private: System::Void delAllItemsTSMI_Click(System::Object^ sender, System::EventArgs^ e) {
+		this->itemList->Items->Clear();
+
+		this->StorageViewTV->BeginUpdate();
+		ComponentMutator::removeAllItems(this->StorageViewTV->Nodes[0]);
+		this->StorageViewTV->EndUpdate();
+
+
+		System::Collections::Generic::List<IPlaceable^>^ flat = 
+			ProgramState::flattenStorage(ProgramState::masterStorage);
+
+		for each (IPlaceable ^ element in flat)
+		{
+			if (element->GetType()->Name == L"Item")
+			{
+				element->parent()->remove(element);
+			}
+		}
+	}
+}; // end class
+} // end namespace
 
 // TODOS:
-// Do not deselect tree node after structure modified
 // Warnings tab

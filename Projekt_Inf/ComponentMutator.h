@@ -7,6 +7,10 @@ namespace Program
 
 	ref class ComponentMutator abstract sealed
 	{
+	private:
+		static System::Collections::Generic::List<System::Windows::Forms::TreeNode^>^ _flattenTree(
+			System::Windows::Forms::TreeNode^ root
+		);
 	public:
 		static void removeFromListView(System::Windows::Forms::ListView^ component, Item^ item);
 		static void addChildrenToNode(
@@ -15,6 +19,8 @@ namespace Program
 		);
 
 		static System::Windows::Forms::TreeNode^ createTreeNode(IPlaceable^ item, bool isStore);
+
+		static void removeAllItems(System::Windows::Forms::TreeNode^ root);
 	};
 }
 

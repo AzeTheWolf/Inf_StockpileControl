@@ -1,5 +1,7 @@
 #pragma once
 #include "Storage.h"
+#include "IPlaceable.h"
+#include "Compartment.h"
 
 namespace Program {
 
@@ -32,6 +34,24 @@ namespace Program {
 			{
 				Application::Exit();
 			}
+		}
+
+		static System::Collections::Generic::List<IPlaceable^>^ flattenStorage(CStore^ root)
+		{
+			System::Collections::Generic::List<IPlaceable^>^ list
+				= gcnew System::Collections::Generic::List<IPlaceable^>;
+
+			for each (IPlaceable ^ element in root->getContents())
+			{
+				list->Add(element);
+				if (element->GetType()->Name == L"Compartment")
+				{
+					Compartment^ compartment = dynamic_cast<Compartment^>(element);
+
+					list->AddRange(ProgramState::flattenStorage(compartment));
+				}
+			}
+			return list;
 		}
 	};
 

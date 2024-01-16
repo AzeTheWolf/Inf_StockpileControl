@@ -5,8 +5,29 @@
 #include "ProgramState.h"
 
 using namespace System::Windows::Forms;
+using namespace System::Collections::Generic;
 using namespace Program::Helpers;
 using namespace Program;
+
+List<TreeNode^>^ Program::ComponentMutator::_flattenTree(TreeNode^ root)
+{
+	List<TreeNode^>^ list = 
+		gcnew List<TreeNode^>;
+
+	for each (TreeNode ^ element in root->Nodes)
+	{
+		if (element->Tag->GetType()->Name == L"Item")
+		{
+			list->Add(element);
+		}
+		else if (element->Tag->GetType()->Name == L"Compartment")
+		{
+			list->AddRange(ComponentMutator::_flattenTree(element));
+		}
+	}
+
+	return list;
+}
 
 void Program::ComponentMutator::removeFromListView(ListView^ component, Item^ item)
 {
@@ -43,6 +64,19 @@ System::Windows::Forms::TreeNode^ Program::ComponentMutator::createTreeNode(IPla
 		node->ForeColor = System::Drawing::Color::Green;
 	}
 	return node;
+}
+
+void Program::ComponentMutator::removeAllItems(System::Windows::Forms::TreeNode^ root)
+{
+	List<TreeNode^>^ list = ComponentMutator::_flattenTree(root);
+
+	for each (TreeNode ^ node in list)
+	{
+		if (node->Tag->GetType()->Name == L"Item")
+		{
+			node->Remove();
+		}
+	}
 }
 
 void Program::ComponentMutator::addChildrenToNode(System::Windows::Forms::TreeNode^ parent, System::Collections::Generic::List<IPlaceable^>^ elements)

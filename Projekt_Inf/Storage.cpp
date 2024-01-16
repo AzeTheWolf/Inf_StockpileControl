@@ -30,7 +30,7 @@ void Program::CStore::sendTo(IPlaceable^ item, CStore^ other)
 System::Collections::Generic::List<Item^>^ Program::CStore::getItems()
 {
 	auto list = gcnew System::Collections::Generic::List<Item^>;
-	for each (Item ^ item in this->contents)
+	for each (IPlaceable ^ item in this->contents)
 	{
 		list->AddRange(item->getItems());
 	}
