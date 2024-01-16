@@ -68,7 +68,7 @@ namespace Program {
 	private: System::Windows::Forms::TreeView^ StorageViewTV;
 	private: System::Windows::Forms::TabPage^ itemsTabPage;
 
-	private: System::ComponentModel::BackgroundWorker^ backgroundWorker1;
+
 	private: System::Windows::Forms::GroupBox^ groupBox1;
 	private: System::Windows::Forms::GroupBox^ groupBox2;
 	private: System::Windows::Forms::Label^ label3;
@@ -180,7 +180,6 @@ namespace Program {
 			this->columnHeader5 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->columnHeader6 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->ErrorProvider = (gcnew System::Windows::Forms::ErrorProvider(this->components));
-			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->magazynTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->emptyMainTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -607,14 +606,14 @@ namespace Program {
 			// odœwie¿ToolStripMenuItem1
 			// 
 			this->odœwie¿ToolStripMenuItem1->Name = L"odœwie¿ToolStripMenuItem1";
-			this->odœwie¿ToolStripMenuItem1->Size = System::Drawing::Size(224, 26);
+			this->odœwie¿ToolStripMenuItem1->Size = System::Drawing::Size(189, 26);
 			this->odœwie¿ToolStripMenuItem1->Text = L"Odœwie¿";
 			this->odœwie¿ToolStripMenuItem1->Click += gcnew System::EventHandler(this, &MainWindow::odœwie¿ToolStripMenuItem1_Click);
 			// 
 			// delAllItemsTSMI
 			// 
 			this->delAllItemsTSMI->Name = L"delAllItemsTSMI";
-			this->delAllItemsTSMI->Size = System::Drawing::Size(224, 26);
+			this->delAllItemsTSMI->Size = System::Drawing::Size(189, 26);
 			this->delAllItemsTSMI->Text = L"Usuñ wszystkie";
 			this->delAllItemsTSMI->Click += gcnew System::EventHandler(this, &MainWindow::delAllItemsTSMI_Click);
 			// 
@@ -627,6 +626,9 @@ namespace Program {
 			this->Controls->Add(this->menuStrip1);
 			this->MainMenuStrip = this->menuStrip1;
 			this->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->MaximizeBox = false;
+			this->MaximumSize = System::Drawing::Size(1298, 767);
+			this->MinimumSize = System::Drawing::Size(1298, 767);
 			this->Name = L"MainWindow";
 			this->Text = L"MainWindow";
 			this->Load += gcnew System::EventHandler(this, &MainWindow::MainWindow_Load);
