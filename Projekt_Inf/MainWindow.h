@@ -4,6 +4,7 @@
 #include "Item.h"
 #include "Compartment.h"
 #include "ComponentMutator.h"
+#include "DataReadWrite.h"
 
 namespace Program {
 
@@ -106,6 +107,9 @@ namespace Program {
 
 	private: System::Windows::Forms::ToolStripMenuItem^ odœwie¿ToolStripMenuItem1;
 	private: System::Windows::Forms::ToolStripMenuItem^ delAllItemsTSMI;
+	private: System::Windows::Forms::ToolStripMenuItem^ fileTSMI;
+	private: System::Windows::Forms::ToolStripMenuItem^ saveTSMI;
+
 
 
 
@@ -181,6 +185,8 @@ namespace Program {
 			this->columnHeader6 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->ErrorProvider = (gcnew System::Windows::Forms::ErrorProvider(this->components));
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
+			this->fileTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->saveTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->magazynTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->emptyMainTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->refreshStoreTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -561,13 +567,30 @@ namespace Program {
 			// menuStrip1
 			// 
 			this->menuStrip1->ImageScalingSize = System::Drawing::Size(20, 20);
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->magazynTSMI, this->itemTSMI });
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+				this->fileTSMI, this->magazynTSMI,
+					this->itemTSMI
+			});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
 			this->menuStrip1->Padding = System::Windows::Forms::Padding(5, 2, 0, 2);
 			this->menuStrip1->Size = System::Drawing::Size(1280, 28);
 			this->menuStrip1->TabIndex = 4;
 			this->menuStrip1->Text = L"menuStrip1";
+			// 
+			// fileTSMI
+			// 
+			this->fileTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->saveTSMI });
+			this->fileTSMI->Name = L"fileTSMI";
+			this->fileTSMI->Size = System::Drawing::Size(46, 24);
+			this->fileTSMI->Text = L"Plik";
+			// 
+			// saveTSMI
+			// 
+			this->saveTSMI->Name = L"saveTSMI";
+			this->saveTSMI->Size = System::Drawing::Size(224, 26);
+			this->saveTSMI->Text = L"Zapisz";
+			this->saveTSMI->Click += gcnew System::EventHandler(this, &MainWindow::saveTSMI_Click);
 			// 
 			// magazynTSMI
 			// 
@@ -825,6 +848,8 @@ namespace Program {
 	{
 		this->StorageViewTV->Nodes[0]->Tag = ProgramState::masterStorage;
 		this->StorageViewTV->SelectedNode = this->StorageViewTV->Nodes[0];
+
+
 	}
 
 	private: System::Void StorageViewTV_AfterSelect(System::Object^ sender, System::Windows::Forms::TreeViewEventArgs^ e)
@@ -1204,6 +1229,10 @@ namespace Program {
 				element->parent()->remove(element);
 			}
 		}
+	}
+	private: System::Void saveTSMI_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+		DataReadWrite::FileIO::write();
 	}
 }; // end class
 } // end namespace
