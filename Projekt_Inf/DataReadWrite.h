@@ -4,6 +4,7 @@ namespace Program
 {
 	ref class Item;
 	interface class IPlaceable;
+	ref class CStore;
 
 	namespace DataReadWrite
 	{
@@ -27,10 +28,16 @@ namespace Program
 		ref class FileIO abstract sealed
 		{
 		private:
+
 			static System::Collections::Generic::List<PlaceableData^>^
 				_convert(System::Collections::Generic::List<IPlaceable^>^ input);
+			static void
+				_deconvertAndPlace(System::Collections::Generic::List<PlaceableData^>^ input, CStore^ parent);
 		public:
+			static System::String^ path = nullptr;
+
 			static void write();
+			static void read();
 		};
 	}
 }

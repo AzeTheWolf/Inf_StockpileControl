@@ -4,6 +4,7 @@
 #include "IPlaceable.h"
 #include "Item.h"
 #include "Compartment.h"
+#include "Storage.h"
 
 using namespace Program;
 using namespace Program::DataReadWrite;
@@ -49,6 +50,35 @@ System::Collections::Generic::List<PlaceableData^>^ FileIO::_convert(System::Col
 	return output;
 }
 
+void FileIO::_deconvertAndPlace(List<PlaceableData^>^ input, CStore^ parent)
+{
+	for each (PlaceableData ^ element in input)
+	{
+		if (element->type == ElementType::ITEM)
+		{
+			Item^ item = gcnew Item(
+				element->displayName,
+				element->description,
+				element->quantity
+			);
+
+			item->setAlertLevel(element->stockpileAlert);
+			item->setDecayDate(element->decaysOn);
+			parent->place(item);
+		}
+		else if (element->type == ElementType::COMPARTMENT)
+		{
+			Compartment^ store = gcnew Compartment(
+				element->displayName,
+				element->description
+			);
+
+			parent->place(store);
+			FileIO::_deconvertAndPlace(element->contents, store);
+		}
+	}
+}
+
 void Program::DataReadWrite::FileIO::write()
 {
 	XmlSerializer^ serializer = 
@@ -60,4 +90,31 @@ void Program::DataReadWrite::FileIO::write()
 	StreamWriter^ writer = gcnew StreamWriter(L"data.xml");
 	serializer->Serialize(writer, list);
 	writer->Close();
+}
+
+void Program::DataReadWrite::FileIO::read()
+{
+	XmlSerializer^ serializer
+		= gcnew XmlSerializer(List<PlaceableData^>::typeid);
+
+	try 
+	{
+		StreamReader^ reader = gcnew StreamReader(L"data.xml");
+		List<PlaceableData^>^ data = 
+			dynamic_cast<List<PlaceableData^>^>(serializer->Deserialize(reader));
+		reader->Close();
+
+		while (ProgramState::masterStorage->getContents()->Count > 0)
+		{
+			ProgramState::masterStorage->remove(ProgramState::masterStorage->getContents()[0]);
+		}
+		FileIO::_deconvertAndPlace(data, ProgramState::masterStorage);
+	}
+	catch (FileNotFoundException^ ex)
+	{
+		ProgramState::handleError(
+			System::String::Format(L"Nie mo¿na otworzyæ pliku: {0}", ex->FileName)
+		);
+		return;
+	}
 }

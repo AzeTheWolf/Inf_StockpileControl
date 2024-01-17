@@ -109,6 +109,8 @@ namespace Program {
 	private: System::Windows::Forms::ToolStripMenuItem^ delAllItemsTSMI;
 	private: System::Windows::Forms::ToolStripMenuItem^ fileTSMI;
 	private: System::Windows::Forms::ToolStripMenuItem^ saveTSMI;
+	private: System::Windows::Forms::ToolStripMenuItem^ openTSMI;
+	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog1;
 
 
 
@@ -187,12 +189,14 @@ namespace Program {
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->saveTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->openTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->magazynTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->emptyMainTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->refreshStoreTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->itemTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->odœwie¿ToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->delAllItemsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->windowTabsTC->SuspendLayout();
 			this->storageTabPage->SuspendLayout();
 			this->groupBox2->SuspendLayout();
@@ -580,7 +584,7 @@ namespace Program {
 			// 
 			// fileTSMI
 			// 
-			this->fileTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->saveTSMI });
+			this->fileTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->saveTSMI, this->openTSMI });
 			this->fileTSMI->Name = L"fileTSMI";
 			this->fileTSMI->Size = System::Drawing::Size(46, 24);
 			this->fileTSMI->Text = L"Plik";
@@ -591,6 +595,13 @@ namespace Program {
 			this->saveTSMI->Size = System::Drawing::Size(224, 26);
 			this->saveTSMI->Text = L"Zapisz";
 			this->saveTSMI->Click += gcnew System::EventHandler(this, &MainWindow::saveTSMI_Click);
+			// 
+			// openTSMI
+			// 
+			this->openTSMI->Name = L"openTSMI";
+			this->openTSMI->Size = System::Drawing::Size(224, 26);
+			this->openTSMI->Text = L"Otwórz";
+			this->openTSMI->Click += gcnew System::EventHandler(this, &MainWindow::openTSMI_Click);
 			// 
 			// magazynTSMI
 			// 
@@ -1232,7 +1243,20 @@ namespace Program {
 	}
 	private: System::Void saveTSMI_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
+		if (DataReadWrite::FileIO::path == nullptr)
+		{
+			if (this->saveFileDialog1->ShowDialog() == Windows::Forms::DialogResult::OK)
+			{
+				DataReadWrite::FileIO::path = this->saveFileDialog1->FileName;
+			}
+			else return;
+		}
+
 		DataReadWrite::FileIO::write();
+	}
+	private: System::Void openTSMI_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+		DataReadWrite::FileIO::read();
 	}
 }; // end class
 } // end namespace
