@@ -6,14 +6,14 @@
 #include "ComponentMutator.h"
 #include "DataReadWrite.h"
 
-namespace Program {
+using namespace System;
+using namespace System::ComponentModel;
+using namespace System::Collections;
+using namespace System::Windows::Forms;
+using namespace System::Data;
+using namespace System::Drawing;
 
-	using namespace System;
-	using namespace System::ComponentModel;
-	using namespace System::Collections;
-	using namespace System::Windows::Forms;
-	using namespace System::Data;
-	using namespace System::Drawing;
+namespace Program {
 
 	/// <summary>
 	/// Podsumowanie informacji o MainWindow
@@ -111,6 +111,8 @@ namespace Program {
 	private: System::Windows::Forms::ToolStripMenuItem^ saveTSMI;
 	private: System::Windows::Forms::ToolStripMenuItem^ openTSMI;
 	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog1;
+	private: System::Windows::Forms::OpenFileDialog^ openFileDialog;
+	private: System::Windows::Forms::ToolStripMenuItem^ saveAsTSMI;
 
 
 
@@ -197,6 +199,8 @@ namespace Program {
 			this->odœwie¿ToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->delAllItemsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
+			this->openFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->saveAsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->windowTabsTC->SuspendLayout();
 			this->storageTabPage->SuspendLayout();
 			this->groupBox2->SuspendLayout();
@@ -578,15 +582,18 @@ namespace Program {
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
 			this->menuStrip1->Padding = System::Windows::Forms::Padding(5, 2, 0, 2);
-			this->menuStrip1->Size = System::Drawing::Size(1280, 30);
+			this->menuStrip1->Size = System::Drawing::Size(1280, 28);
 			this->menuStrip1->TabIndex = 4;
 			this->menuStrip1->Text = L"menuStrip1";
 			// 
 			// fileTSMI
 			// 
-			this->fileTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->saveTSMI, this->openTSMI });
+			this->fileTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+				this->openTSMI, this->saveTSMI,
+					this->saveAsTSMI
+			});
 			this->fileTSMI->Name = L"fileTSMI";
-			this->fileTSMI->Size = System::Drawing::Size(46, 26);
+			this->fileTSMI->Size = System::Drawing::Size(46, 24);
 			this->fileTSMI->Text = L"Plik";
 			// 
 			// saveTSMI
@@ -610,7 +617,7 @@ namespace Program {
 					this->refreshStoreTSMI
 			});
 			this->magazynTSMI->Name = L"magazynTSMI";
-			this->magazynTSMI->Size = System::Drawing::Size(83, 26);
+			this->magazynTSMI->Size = System::Drawing::Size(83, 24);
 			this->magazynTSMI->Text = L"Magazyn";
 			// 
 			// emptyMainTSMI
@@ -634,7 +641,7 @@ namespace Program {
 					this->delAllItemsTSMI
 			});
 			this->itemTSMI->Name = L"itemTSMI";
-			this->itemTSMI->Size = System::Drawing::Size(91, 26);
+			this->itemTSMI->Size = System::Drawing::Size(91, 24);
 			this->itemTSMI->Text = L"Przedmiot";
 			// 
 			// odœwie¿ToolStripMenuItem1
@@ -653,7 +660,20 @@ namespace Program {
 			// 
 			// saveFileDialog1
 			// 
+			this->saveFileDialog1->DefaultExt = L"xml";
 			this->saveFileDialog1->Filter = L"*.xml|";
+			// 
+			// openFileDialog
+			// 
+			this->openFileDialog->DefaultExt = L"xml";
+			this->openFileDialog->Filter = L"*.xml|";
+			// 
+			// saveAsTSMI
+			// 
+			this->saveAsTSMI->Name = L"saveAsTSMI";
+			this->saveAsTSMI->Size = System::Drawing::Size(224, 26);
+			this->saveAsTSMI->Text = L"Zapisz Jako";
+			this->saveAsTSMI->Click += gcnew System::EventHandler(this, &MainWindow::saveAsTSMI_Click);
 			// 
 			// MainWindow
 			// 
@@ -863,8 +883,6 @@ namespace Program {
 	{
 		this->StorageViewTV->Nodes[0]->Tag = ProgramState::masterStorage;
 		this->StorageViewTV->SelectedNode = this->StorageViewTV->Nodes[0];
-
-
 	}
 
 	private: System::Void StorageViewTV_AfterSelect(System::Object^ sender, System::Windows::Forms::TreeViewEventArgs^ e)
@@ -1112,38 +1130,7 @@ namespace Program {
 
 	private: System::Void odœwie¿ToolStripMenuItem1_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		System::Collections::Generic::List<Item^>^ list = ProgramState::masterStorage->getItems();
-		this->itemList->Items->Clear();
-
-		this->itemList->BeginUpdate();
-		for each (Item ^ item in list)
-		{
-			ListViewItem^ listItem = gcnew ListViewItem;
-			listItem->Text = item->getName();
-			listItem->SubItems->Add(item->getQuantity().ToString());
-			listItem->SubItems->Add(item->getDecayDate().Year < 9999 ? item->getDecayDate().ToShortDateString() : L"-");
-			listItem->SubItems->Add(L"");
-			listItem->SubItems->Add(item->getDescription());
-			listItem->SubItems->Add(item->getAlertLevel().ToString());
-			listItem->Tag = item;
-
-			if (item->getQuantity() <= item->getAlertLevel())
-			{
-				listItem->ForeColor = System::Drawing::Color::Red;
-			}
-
-			if (item->getDecayDate() < System::DateTime::Now)
-			{
-				this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::DarkOrange;
-			}
-			else if (item->getDecayDate() < System::DateTime::Now.AddDays(2))
-			{
-				this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::Yellow;
-			}
-
-			this->itemList->Items->Add(listItem);
-		}
-		this->itemList->EndUpdate();
+		ComponentMutator::regenerateList(this->itemList);
 	}
 	private: System::Void delStoreBtn_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
@@ -1218,13 +1205,7 @@ namespace Program {
 	
 	private: System::Void refreshStoreTSMI_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		this->StorageViewTV->BeginUpdate();
-
-		TreeNode^ root = this->StorageViewTV->Nodes[0];
-		root->Nodes->Clear();
-		ComponentMutator::addChildrenToNode(root, ProgramState::masterStorage->getContents());
-
-		this->StorageViewTV->EndUpdate();
+		ComponentMutator::regenerateTree(this->StorageViewTV);
 	}
 	private: System::Void delAllItemsTSMI_Click(System::Object^ sender, System::EventArgs^ e) {
 		this->itemList->Items->Clear();
@@ -1258,9 +1239,21 @@ namespace Program {
 
 		DataReadWrite::FileIO::write();
 	}
+	private: System::Void saveAsTSMI_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (this->saveFileDialog1->ShowDialog() != Windows::Forms::DialogResult::OK)
+			return;
+		
+		DataReadWrite::FileIO::path = this->saveFileDialog1->FileName;
+		DataReadWrite::FileIO::write();
+	}
 	private: System::Void openTSMI_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
-		DataReadWrite::FileIO::read();
+		if (this->openFileDialog->ShowDialog() != Windows::Forms::DialogResult::OK)
+			return;
+
+		DataReadWrite::FileIO::read(this->openFileDialog->FileName);
+		ComponentMutator::regenerateTree(this->StorageViewTV);
+		ComponentMutator::regenerateList(this->itemList);
 	}
 }; // end class
 } // end namespace

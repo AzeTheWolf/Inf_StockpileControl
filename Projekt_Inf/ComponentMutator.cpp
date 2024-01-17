@@ -52,7 +52,7 @@ void Program::ComponentMutator::removeFromListView(ListView^ component, Item^ it
 	}
 }
 
-System::Windows::Forms::TreeNode^ Program::ComponentMutator::createTreeNode(IPlaceable^ item, bool isStore)
+TreeNode^ Program::ComponentMutator::createTreeNode(IPlaceable^ item, bool isStore)
 {
 	TreeNode^ node = gcnew TreeNode();
 	node->Text = item->getName();
@@ -66,6 +66,20 @@ System::Windows::Forms::TreeNode^ Program::ComponentMutator::createTreeNode(IPla
 	return node;
 }
 
+ListViewItem^ Program::ComponentMutator::createListItem(Item^ item)
+{
+	ListViewItem^ listItem = gcnew ListViewItem;
+	listItem->Text = item->getName();
+	listItem->SubItems->Add(item->getQuantity().ToString());
+	listItem->SubItems->Add(item->getDecayDate().Year < 9999 ? item->getDecayDate().ToShortDateString() : L"-");
+	listItem->SubItems->Add(L"");
+	listItem->SubItems->Add(item->getDescription());
+	listItem->SubItems->Add(item->getAlertLevel().ToString());
+	listItem->Tag = item;
+
+	return listItem;
+}
+
 void Program::ComponentMutator::removeAllItems(System::Windows::Forms::TreeNode^ root)
 {
 	List<TreeNode^>^ list = ComponentMutator::_flattenTree(root);
@@ -77,6 +91,46 @@ void Program::ComponentMutator::removeAllItems(System::Windows::Forms::TreeNode^
 			node->Remove();
 		}
 	}
+}
+
+void Program::ComponentMutator::regenerateTree(System::Windows::Forms::TreeView^ tree)
+{
+	tree->BeginUpdate();
+
+	TreeNode^ root = tree->Nodes[0];
+	root->Nodes->Clear();
+	ComponentMutator::addChildrenToNode(root, ProgramState::masterStorage->getContents());
+
+	tree->EndUpdate();
+}
+
+void Program::ComponentMutator::regenerateList(System::Windows::Forms::ListView^ list)
+{
+	list->Items->Clear();
+	System::Collections::Generic::List<Item^>^ itemList = ProgramState::masterStorage->getItems();
+
+	list->BeginUpdate();
+	for each (Item ^ item in itemList)
+	{
+		ListViewItem^ listItem = ComponentMutator::createListItem(item);
+
+		if (item->getQuantity() <= item->getAlertLevel())
+		{
+			listItem->ForeColor = System::Drawing::Color::Red;
+		}
+
+		if (item->getDecayDate() < System::DateTime::Now)
+		{
+			listItem->BackColor = System::Drawing::Color::DarkOrange;
+		}
+		else if (item->getDecayDate() < System::DateTime::Now.AddDays(2))
+		{
+			listItem->BackColor = System::Drawing::Color::Yellow;
+		}
+
+		list->Items->Add(listItem);
+	}
+	list->EndUpdate();
 }
 
 void Program::ComponentMutator::addChildrenToNode(System::Windows::Forms::TreeNode^ parent, System::Collections::Generic::List<IPlaceable^>^ elements)

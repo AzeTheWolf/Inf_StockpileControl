@@ -37,7 +37,7 @@ namespace Program
 			static System::String^ path = nullptr;
 
 			static void write();
-			static void read();
+			static void read(System::String^ path);
 		};
 	}
 }

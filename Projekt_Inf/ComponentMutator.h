@@ -19,8 +19,12 @@ namespace Program
 		);
 
 		static System::Windows::Forms::TreeNode^ createTreeNode(IPlaceable^ item, bool isStore);
+		static System::Windows::Forms::ListViewItem^ createListItem(Item^ item);
 
 		static void removeAllItems(System::Windows::Forms::TreeNode^ root);
+
+		static void regenerateTree(System::Windows::Forms::TreeView^ tree);
+		static void regenerateList(System::Windows::Forms::ListView^ list);
 	};
 }
 

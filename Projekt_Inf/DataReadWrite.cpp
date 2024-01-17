@@ -87,19 +87,19 @@ void Program::DataReadWrite::FileIO::write()
 	List<PlaceableData^>^ list
 		= FileIO::_convert(ProgramState::masterStorage->getContents());
 
-	StreamWriter^ writer = gcnew StreamWriter(L"data.xml");
+	StreamWriter^ writer = gcnew StreamWriter(FileIO::path);
 	serializer->Serialize(writer, list);
 	writer->Close();
 }
 
-void Program::DataReadWrite::FileIO::read()
+void Program::DataReadWrite::FileIO::read(System::String^ path)
 {
 	XmlSerializer^ serializer
 		= gcnew XmlSerializer(List<PlaceableData^>::typeid);
 
 	try 
 	{
-		StreamReader^ reader = gcnew StreamReader(L"data.xml");
+		StreamReader^ reader = gcnew StreamReader(path);
 		List<PlaceableData^>^ data = 
 			dynamic_cast<List<PlaceableData^>^>(serializer->Deserialize(reader));
 		reader->Close();
@@ -109,6 +109,7 @@ void Program::DataReadWrite::FileIO::read()
 			ProgramState::masterStorage->remove(ProgramState::masterStorage->getContents()[0]);
 		}
 		FileIO::_deconvertAndPlace(data, ProgramState::masterStorage);
+		FileIO::path = path;
 	}
 	catch (FileNotFoundException^ ex)
 	{
