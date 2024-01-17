@@ -190,8 +190,9 @@ namespace Program {
 			this->ErrorProvider = (gcnew System::Windows::Forms::ErrorProvider(this->components));
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->saveTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->openTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->saveTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->saveAsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->magazynTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->emptyMainTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->refreshStoreTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -200,7 +201,6 @@ namespace Program {
 			this->delAllItemsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->openFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
-			this->saveAsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->windowTabsTC->SuspendLayout();
 			this->storageTabPage->SuspendLayout();
 			this->groupBox2->SuspendLayout();
@@ -544,6 +544,7 @@ namespace Program {
 			// columnHeader1
 			// 
 			this->columnHeader1->Text = L"Nazwa";
+			this->columnHeader1->Width = 120;
 			// 
 			// columnHeader2
 			// 
@@ -596,19 +597,26 @@ namespace Program {
 			this->fileTSMI->Size = System::Drawing::Size(46, 24);
 			this->fileTSMI->Text = L"Plik";
 			// 
-			// saveTSMI
-			// 
-			this->saveTSMI->Name = L"saveTSMI";
-			this->saveTSMI->Size = System::Drawing::Size(224, 26);
-			this->saveTSMI->Text = L"Zapisz";
-			this->saveTSMI->Click += gcnew System::EventHandler(this, &MainWindow::saveTSMI_Click);
-			// 
 			// openTSMI
 			// 
 			this->openTSMI->Name = L"openTSMI";
-			this->openTSMI->Size = System::Drawing::Size(224, 26);
+			this->openTSMI->Size = System::Drawing::Size(168, 26);
 			this->openTSMI->Text = L"Otwórz";
 			this->openTSMI->Click += gcnew System::EventHandler(this, &MainWindow::openTSMI_Click);
+			// 
+			// saveTSMI
+			// 
+			this->saveTSMI->Name = L"saveTSMI";
+			this->saveTSMI->Size = System::Drawing::Size(168, 26);
+			this->saveTSMI->Text = L"Zapisz";
+			this->saveTSMI->Click += gcnew System::EventHandler(this, &MainWindow::saveTSMI_Click);
+			// 
+			// saveAsTSMI
+			// 
+			this->saveAsTSMI->Name = L"saveAsTSMI";
+			this->saveAsTSMI->Size = System::Drawing::Size(168, 26);
+			this->saveAsTSMI->Text = L"Zapisz Jako";
+			this->saveAsTSMI->Click += gcnew System::EventHandler(this, &MainWindow::saveAsTSMI_Click);
 			// 
 			// magazynTSMI
 			// 
@@ -668,13 +676,6 @@ namespace Program {
 			this->openFileDialog->DefaultExt = L"xml";
 			this->openFileDialog->Filter = L"*.xml|";
 			// 
-			// saveAsTSMI
-			// 
-			this->saveAsTSMI->Name = L"saveAsTSMI";
-			this->saveAsTSMI->Size = System::Drawing::Size(224, 26);
-			this->saveAsTSMI->Text = L"Zapisz Jako";
-			this->saveAsTSMI->Click += gcnew System::EventHandler(this, &MainWindow::saveAsTSMI_Click);
-			// 
 			// MainWindow
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
@@ -688,7 +689,7 @@ namespace Program {
 			this->MaximumSize = System::Drawing::Size(1298, 767);
 			this->MinimumSize = System::Drawing::Size(1298, 767);
 			this->Name = L"MainWindow";
-			this->Text = L"MainWindow";
+			this->Text = L"Magazyn";
 			this->Load += gcnew System::EventHandler(this, &MainWindow::MainWindow_Load);
 			this->windowTabsTC->ResumeLayout(false);
 			this->storageTabPage->ResumeLayout(false);
@@ -796,7 +797,6 @@ namespace Program {
 
 		this->StorageViewTV->SelectedNode = selNode;
 	}
-
 
 	private: System::Void addItemBtn_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -1208,6 +1208,12 @@ namespace Program {
 		ComponentMutator::regenerateTree(this->StorageViewTV);
 	}
 	private: System::Void delAllItemsTSMI_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (!ProgramState::confirmBox(
+			L"Potwierdzenie",
+			L"Czy na pewno chcesz usun¹æ pojemnik i ca³¹ jego zawartoœæ? Tej czynnoœci nie mo¿na cofn¹æ",
+			MessageBoxIcon::Warning
+		)) return;
+		
 		this->itemList->Items->Clear();
 
 		this->StorageViewTV->BeginUpdate();
@@ -1259,4 +1265,9 @@ namespace Program {
 } // end namespace
 
 // TODOS:
-// Warnings tab
+// Warnings tab [?]
+// Editing functions
+// Database
+// Docs
+// Warning manager
+// Item list column widths
