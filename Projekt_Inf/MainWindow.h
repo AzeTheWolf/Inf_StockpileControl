@@ -578,7 +578,7 @@ namespace Program {
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
 			this->menuStrip1->Padding = System::Windows::Forms::Padding(5, 2, 0, 2);
-			this->menuStrip1->Size = System::Drawing::Size(1280, 28);
+			this->menuStrip1->Size = System::Drawing::Size(1280, 30);
 			this->menuStrip1->TabIndex = 4;
 			this->menuStrip1->Text = L"menuStrip1";
 			// 
@@ -586,7 +586,7 @@ namespace Program {
 			// 
 			this->fileTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->saveTSMI, this->openTSMI });
 			this->fileTSMI->Name = L"fileTSMI";
-			this->fileTSMI->Size = System::Drawing::Size(46, 24);
+			this->fileTSMI->Size = System::Drawing::Size(46, 26);
 			this->fileTSMI->Text = L"Plik";
 			// 
 			// saveTSMI
@@ -610,7 +610,7 @@ namespace Program {
 					this->refreshStoreTSMI
 			});
 			this->magazynTSMI->Name = L"magazynTSMI";
-			this->magazynTSMI->Size = System::Drawing::Size(83, 24);
+			this->magazynTSMI->Size = System::Drawing::Size(83, 26);
 			this->magazynTSMI->Text = L"Magazyn";
 			// 
 			// emptyMainTSMI
@@ -634,7 +634,7 @@ namespace Program {
 					this->delAllItemsTSMI
 			});
 			this->itemTSMI->Name = L"itemTSMI";
-			this->itemTSMI->Size = System::Drawing::Size(91, 24);
+			this->itemTSMI->Size = System::Drawing::Size(91, 26);
 			this->itemTSMI->Text = L"Przedmiot";
 			// 
 			// odœwie¿ToolStripMenuItem1
@@ -650,6 +650,10 @@ namespace Program {
 			this->delAllItemsTSMI->Size = System::Drawing::Size(189, 26);
 			this->delAllItemsTSMI->Text = L"Usuñ wszystkie";
 			this->delAllItemsTSMI->Click += gcnew System::EventHandler(this, &MainWindow::delAllItemsTSMI_Click);
+			// 
+			// saveFileDialog1
+			// 
+			this->saveFileDialog1->Filter = L"*.xml|";
 			// 
 			// MainWindow
 			// 
