@@ -21,11 +21,11 @@ namespace Program {
 		static System::Void handleError(System::String^ message)
 		{
 			auto box = MessageBox::Show(
-				L"Aplikacja napotka³a niespodziewany b³¹d!", 
 				System::String::Format(
-					L"{0} Kliknij OK aby kontynuowaæ, lub Anuluj aby zakoñczyæ program", 
+					L"{0} Kliknij OK aby kontynuowaæ, lub Anuluj aby zakoñczyæ program",
 					message
 				),
+				L"Aplikacja napotka³a niespodziewany b³¹d!", 
 				MessageBoxButtons::OKCancel,
 				MessageBoxIcon::Error
 			);
