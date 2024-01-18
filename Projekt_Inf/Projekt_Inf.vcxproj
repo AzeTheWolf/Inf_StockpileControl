@@ -73,14 +73,18 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\MySQL\MySQL Connector C++ 8.3\include\jdbc;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\MySQL\MySQL Connector C++ 8.3\lib64\vs14;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\MySQL\MySQL Connector C++ 8.3\include\jdbc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies />
+      <AdditionalDependencies>mysqlcppconn.lib</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>Main</EntryPointSymbol>
     </Link>
@@ -127,6 +131,7 @@
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Storage.cpp" />
+    <ClCompile Include="WarningManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Compartment.h" />
@@ -140,6 +145,7 @@
     <ClInclude Include="IPlaceable.h" />
     <ClInclude Include="ProgramState.h" />
     <ClInclude Include="Storage.h" />
+    <ClInclude Include="WarningManager.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainWindow.resx">
