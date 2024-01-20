@@ -77,6 +77,10 @@
     <IncludePath>C:\MySQL\MySQL Connector C++ 8.3\include\jdbc;$(IncludePath)</IncludePath>
     <LibraryPath>C:\MySQL\MySQL Connector C++ 8.3\lib64\vs14;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\MySQL\MySQL Connector C++ 8.3\include\jdbc;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\MySQL\MySQL Connector C++ 8.3\lib64\vs14;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -88,6 +92,9 @@
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>Main</EntryPointSymbol>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y  "C:\MySQL\MySQL Connector C++ 8.3\lib64\*.dll"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -111,9 +118,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\MySQL\MySQL Connector C++ 8.3\include\jdbc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies />
+      <AdditionalDependencies>mysqlcppconn.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>Main</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -131,7 +141,6 @@
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Storage.cpp" />
-    <ClCompile Include="WarningManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Compartment.h" />
@@ -145,7 +154,6 @@
     <ClInclude Include="IPlaceable.h" />
     <ClInclude Include="ProgramState.h" />
     <ClInclude Include="Storage.h" />
-    <ClInclude Include="WarningManager.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainWindow.resx">

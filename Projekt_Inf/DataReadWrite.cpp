@@ -6,6 +6,12 @@
 #include "Compartment.h"
 #include "Storage.h"
 
+#include <mysql_connection.h>
+#include <mysql_driver.h>
+#include <cppconn/prepared_statement.h>
+
+#include <msclr/marshal_cppstd.h>
+
 using namespace Program;
 using namespace Program::DataReadWrite;
 using namespace System::Xml::Serialization;
@@ -118,4 +124,36 @@ void Program::DataReadWrite::FileIO::read(System::String^ path)
 		);
 		return;
 	}
+}
+
+Program::DataReadWrite::DatabaseConnection::DatabaseConnection()
+{
+	try
+	{
+	this->driver = sql::mysql::get_mysql_driver_instance();
+	this->conn = this->driver->connect("tcp://localhost:3306/stockpilemanager", "usr", "passwd");
+	}
+	catch (sql::SQLException& e)
+	{
+		ProgramState::handleError(msclr::interop::marshal_as<System::String^>(e.what()));
+	}
+
+}
+
+Program::DataReadWrite::DatabaseConnection::~DatabaseConnection()
+{
+	delete this->conn;
+	delete this->driver;
+}
+
+void DatabaseConnection::putDatabaseItemRecord(System::String^ name, System::String^ description, System::UInt16 quantity)
+{
+	sql::PreparedStatement* statement;
+	statement = this->conn->prepareStatement("INSERT INTO items VALUES(NULL, ?, ?, ?)");
+	statement->setString(1, msclr::interop::marshal_as<std::string>(name));
+	statement->setString(2, msclr::interop::marshal_as<std::string>(description));
+	statement->setInt(3, quantity);
+
+	statement->execute();
+	delete statement;
 }

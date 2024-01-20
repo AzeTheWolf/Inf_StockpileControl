@@ -3,6 +3,7 @@
 
 namespace Program {
 	ref class Item;
+
 	ref class CStore
 	{
 	protected:

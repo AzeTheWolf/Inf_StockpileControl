@@ -1,5 +1,8 @@
 #pragma once
 
+#include <mysql_connection.h>
+#include <mysql_driver.h>
+
 namespace Program
 {
 	ref class Item;
@@ -38,6 +41,23 @@ namespace Program
 
 			static void write();
 			static void read(System::String^ path);
+		};
+
+
+		ref class DatabaseConnection sealed
+		{
+		private:
+			sql::mysql::MySQL_Driver* driver;
+			sql::Connection* conn;
+		public:
+			DatabaseConnection();
+			~DatabaseConnection();
+
+			void putDatabaseItemRecord(
+				System::String^ name, 
+				System::String^ description, 
+				System::UInt16 quantity
+			);
 		};
 	}
 }

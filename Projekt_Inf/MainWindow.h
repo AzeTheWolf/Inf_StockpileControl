@@ -877,6 +877,8 @@ namespace Program {
 		this->newItemDescTB->Clear();
 
 		this->StorageViewTV->SelectedNode = selNode;
+
+		ProgramState::dbc->putDatabaseItemRecord(item->getName(), item->getDescription(), item->getQuantity());
 	}
 
 	private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^ e) 
