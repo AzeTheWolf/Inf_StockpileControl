@@ -9,6 +9,8 @@ Compartment::Compartment(System::String^ displayName, System::String^ descriptio
         ? L"Pojemnik"
         : displayName;
     this->description = description;
+
+    this->uuid = System::Guid::NewGuid();
 }
 
 void Compartment::zero()
@@ -69,6 +71,11 @@ System::String^ Compartment::getPath()
         parentPath = loc->getPath();
     }
     return System::String::Format(L"{0}/{1}", parentPath, this->displayName);
+}
+
+System::Guid^ Program::Compartment::getUUID()
+{
+    return this->uuid;
 }
 
 

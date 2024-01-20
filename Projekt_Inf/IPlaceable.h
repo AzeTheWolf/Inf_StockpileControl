@@ -19,5 +19,7 @@ namespace Program {
 
 		virtual System::Collections::Generic::List<Item^>^ getItems();
 		virtual System::String^ getPath();
+
+		virtual System::Guid^ getUUID();
 	};
 }

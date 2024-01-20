@@ -7,6 +7,8 @@ namespace Program {
 
 	ref class Compartment : public CStore, IPlaceable
 	{
+	private:
+		System::Guid^ uuid;
 	protected:
 		System::String^ displayName;
 		System::String^ description;
@@ -24,6 +26,8 @@ namespace Program {
 		virtual CStore^ parent();
 		virtual void setParent(CStore^ parent);
 		virtual System::String^ getPath();
+
+		virtual System::Guid^ getUUID();
 	};
 
 }

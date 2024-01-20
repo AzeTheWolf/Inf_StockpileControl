@@ -1,6 +1,9 @@
 #include "Item.h"
 #include "ProgramState.h"
 #include "Compartment.h"
+#include "Storage.h"
+#include "IPlaceable.h"
+
 
 using namespace Program;
 
@@ -13,6 +16,7 @@ Item::Item(System::String^ displayName, System::String^ description, System::UIn
     this->description = description;
 
     this->decaysOn = System::DateTime(9999, 1, 1, 0, 0, 0, 0);
+    this->uuid = System::Guid::NewGuid();
 }
 
 void Item::zero()
@@ -112,4 +116,9 @@ System::String^ Item::getPath()
         parentPath = loc->getPath();
     }
     return System::String::Format(L"{0}/{1}", parentPath, this->displayName);
+}
+
+System::Guid^ Program::Item::getUUID()
+{
+    return this->uuid;
 }

@@ -1,12 +1,14 @@
 #pragma once
 
-#include "Storage.h"
 #include "IPlaceable.h"
 
 namespace Program {
+	ref class CStore;
 
 	ref class Item : Program::IPlaceable
 	{
+	private:
+		System::Guid^ uuid;
 	protected:
 		System::UInt16 quantity;
 		System::DateTime decaysOn;
@@ -16,7 +18,6 @@ namespace Program {
 		System::String^ description;
 
 		CStore^ location;
-
 	public:
 
 		Item(System::String^ displayName, System::String^ description, System::UInt16 quantity);
@@ -41,6 +42,7 @@ namespace Program {
 		virtual System::Collections::Generic::List<Item^>^ getItems();
 		virtual System::String^ getPath();
 
+		virtual System::Guid^ getUUID();
 	};
 
 }

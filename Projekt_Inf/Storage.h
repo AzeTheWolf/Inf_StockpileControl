@@ -1,8 +1,8 @@
 #pragma once
-#include "IPlaceable.h"
 
 namespace Program {
 	ref class Item;
+	interface class IPlaceable;
 
 	ref class CStore
 	{
