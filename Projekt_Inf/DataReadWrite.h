@@ -8,6 +8,7 @@ namespace Program
 	ref class Item;
 	interface class IPlaceable;
 	ref class CStore;
+	ref class Compartment;
 
 	namespace DataReadWrite
 	{
@@ -49,15 +50,22 @@ namespace Program
 		private:
 			sql::mysql::MySQL_Driver* driver;
 			sql::Connection* conn;
+			bool isClosed = true;
 		public:
-			DatabaseConnection();
 			~DatabaseConnection();
 
-			void putDatabaseItemRecord(
-				System::String^ name, 
-				System::String^ description, 
-				System::UInt16 quantity
-			);
+			void openConnection();
+			void closeConnection();
+
+			void putDatabaseItemRecord(Item^ item);
+			void delDatabaseItemRecord(Item^ item);
+			void putDatabaseStoreRecord(Compartment^ store);
+			void delDatabaseStoreRecord(Compartment^ store);
+
+			void emptyDatabaseItemTable();
+			void emptyDatabaseStoreTable();
+
+			void purge(Compartment^ store);
 		};
 	}
 }

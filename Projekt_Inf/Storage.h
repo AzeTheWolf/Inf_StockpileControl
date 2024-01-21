@@ -21,5 +21,7 @@ namespace Program {
 		{
 			return this->contents;
 		}
+
+		virtual System::Guid^ getUUID();
 	};
 }

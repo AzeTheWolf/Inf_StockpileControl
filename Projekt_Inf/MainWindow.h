@@ -290,6 +290,7 @@ namespace Program {
 			// 
 			this->newItemNameTB->Location = System::Drawing::Point(13, 48);
 			this->newItemNameTB->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->newItemNameTB->MaxLength = 196;
 			this->newItemNameTB->Name = L"newItemNameTB";
 			this->newItemNameTB->Size = System::Drawing::Size(341, 22);
 			this->newItemNameTB->TabIndex = 4;
@@ -330,6 +331,7 @@ namespace Program {
 			// 
 			this->newItemDescTB->Location = System::Drawing::Point(13, 95);
 			this->newItemDescTB->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->newItemDescTB->MaxLength = 4096;
 			this->newItemDescTB->Multiline = true;
 			this->newItemDescTB->Name = L"newItemDescTB";
 			this->newItemDescTB->Size = System::Drawing::Size(341, 431);
@@ -378,6 +380,7 @@ namespace Program {
 			// 
 			this->newStoreNameTB->Location = System::Drawing::Point(13, 48);
 			this->newStoreNameTB->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->newStoreNameTB->MaxLength = 196;
 			this->newStoreNameTB->Name = L"newStoreNameTB";
 			this->newStoreNameTB->Size = System::Drawing::Size(341, 22);
 			this->newStoreNameTB->TabIndex = 4;
@@ -395,6 +398,7 @@ namespace Program {
 			// 
 			this->newStoreDescTB->Location = System::Drawing::Point(13, 95);
 			this->newStoreDescTB->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->newStoreDescTB->MaxLength = 4096;
 			this->newStoreDescTB->Multiline = true;
 			this->newStoreDescTB->Name = L"newStoreDescTB";
 			this->newStoreDescTB->Size = System::Drawing::Size(341, 397);
@@ -784,8 +788,6 @@ namespace Program {
 		// Create associated TreeNode
 		TreeNode^ node = ComponentMutator::createTreeNode(item, true);
 
-		
-
 		// Put in master storage and add to graph
 		targetStorage->place(item);
 		selNode->Nodes->Add(node);
@@ -796,6 +798,10 @@ namespace Program {
 		this->newStoreDescTB->Clear();
 
 		this->StorageViewTV->SelectedNode = selNode;
+
+		ProgramState::dbc->openConnection();
+		ProgramState::dbc->putDatabaseStoreRecord(item);
+		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void addItemBtn_Click(System::Object^ sender, System::EventArgs^ e)
@@ -878,7 +884,9 @@ namespace Program {
 
 		this->StorageViewTV->SelectedNode = selNode;
 
-		ProgramState::dbc->putDatabaseItemRecord(item->getName(), item->getDescription(), item->getQuantity());
+		ProgramState::dbc->openConnection();
+		ProgramState::dbc->putDatabaseItemRecord(item);
+		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^ e) 
@@ -950,16 +958,19 @@ namespace Program {
 		auto listItems = target->getItems(); // All items in selected Compartment
 
 		// for each item in selected Compartment
+		ProgramState::dbc->openConnection();
 		for each (Item ^ item in listItems)
 		{
 			ComponentMutator::removeFromListView(this->itemList, item);
+			ProgramState::dbc->delDatabaseItemRecord(item);
 		}
 		this->itemList->EndUpdate();
-
+		ProgramState::dbc->purge(dynamic_cast<Compartment^>(target));
 		target->zero();
 		selNode->Nodes->Clear();
 
 		this->StorageViewTV->SelectedNode = selNode;
+		ProgramState::dbc->closeConnection();
 	}
 	
 	private: System::Void emptyMainTSMI_Click(System::Object^ sender, System::EventArgs^ e)
@@ -979,6 +990,13 @@ namespace Program {
 		this->StorageViewTV->Nodes[0]->Nodes->Clear();
 		this->itemList->Items->Clear();
 		this->StorageViewTV->SelectedNode = this->StorageViewTV->Nodes[0];
+
+		ProgramState::dbc->openConnection();
+
+		ProgramState::dbc->emptyDatabaseItemTable();
+		ProgramState::dbc->emptyDatabaseStoreTable();
+
+		ProgramState::dbc->closeConnection();
 	}
 	
 	private: System::Void findItemBtn_Click(System::Object^ sender, System::EventArgs^ e) 
@@ -1164,6 +1182,11 @@ namespace Program {
 
 		this->itemList->BeginUpdate();
 
+		ProgramState::dbc->openConnection();
+		ProgramState::dbc->purge(target);
+		ProgramState::dbc->delDatabaseStoreRecord(target);
+		ProgramState::dbc->closeConnection();
+
 		auto listItems = target->getItems(); // All items in selected Compartment
 
 		for each (Item ^ item in listItems)
@@ -1201,6 +1224,10 @@ namespace Program {
 		target->parent()->remove(target);
 		selNode->Remove();
 		ComponentMutator::removeFromListView(this->itemList, target);
+		
+		ProgramState::dbc->openConnection();
+		ProgramState::dbc->delDatabaseItemRecord(target);
+		ProgramState::dbc->closeConnection();
 		
 		lockStructTabBtns();
 	}
@@ -1270,6 +1297,8 @@ namespace Program {
 // Warnings tab [?]
 // Editing functions
 // Database
+//		- item editing
+//		- loading
 // Docs
 // Warning manager
 // Item list column widths

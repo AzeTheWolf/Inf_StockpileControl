@@ -126,34 +126,306 @@ void Program::DataReadWrite::FileIO::read(System::String^ path)
 	}
 }
 
-Program::DataReadWrite::DatabaseConnection::DatabaseConnection()
+Program::DataReadWrite::DatabaseConnection::~DatabaseConnection()
 {
+	this->closeConnection();
+}
+
+void DatabaseConnection::openConnection()
+{
+	if (!isClosed) return;
+
 	try
 	{
-	this->driver = sql::mysql::get_mysql_driver_instance();
-	this->conn = this->driver->connect("tcp://localhost:3306/stockpilemanager", "usr", "passwd");
+		this->driver = sql::mysql::get_mysql_driver_instance();
+		this->conn = this->driver->connect("tcp://localhost:3306/stockpilemanager", "usr", "passwd");
+		this->isClosed = false;
 	}
 	catch (sql::SQLException& e)
 	{
-		ProgramState::handleError(msclr::interop::marshal_as<System::String^>(e.what()));
+		ProgramState::handleError(
+			System::String::Format(
+				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
+				e.getErrorCode()
+			)
+		);
 	}
-
 }
 
-Program::DataReadWrite::DatabaseConnection::~DatabaseConnection()
+void DatabaseConnection::closeConnection()
 {
-	delete this->conn;
-	delete this->driver;
+	if (!isClosed)
+	{
+		delete this->conn;
+		delete this->driver;
+		this->isClosed = true;
+	}
 }
 
-void DatabaseConnection::putDatabaseItemRecord(System::String^ name, System::String^ description, System::UInt16 quantity)
+void DatabaseConnection::putDatabaseItemRecord(Item^ item)
 {
 	sql::PreparedStatement* statement;
-	statement = this->conn->prepareStatement("INSERT INTO items VALUES(NULL, ?, ?, ?)");
-	statement->setString(1, msclr::interop::marshal_as<std::string>(name));
-	statement->setString(2, msclr::interop::marshal_as<std::string>(description));
-	statement->setInt(3, quantity);
 
-	statement->execute();
-	delete statement;
+	try
+	{
+		System::String^ parentID = item->parent()->getUUID() == nullptr
+			? "root"
+			: item->parent()->getUUID()->ToString();
+
+		statement =
+			this->conn->prepareStatement("INSERT INTO items VALUES(?, ?, ?, ?, ?, ?, ?)");
+
+		statement->setString(1, msclr::interop::marshal_as<std::string>(item->getUUID()->ToString()));
+		statement->setInt(2, item->getQuantity());
+		statement->setInt(3, item->getAlertLevel());
+		statement->setString(4,
+			msclr::interop::marshal_as<std::string>(item->getDecayDate().ToString()));
+		statement->setString(5, msclr::interop::marshal_as<std::string>(item->getName()));
+		statement->setString(6, msclr::interop::marshal_as<std::string>(item->getDescription()));
+		statement->setString(7, msclr::interop::marshal_as<std::string>(parentID));
+
+		statement->execute();
+	}
+	catch (sql::SQLException ex)
+	{
+		ProgramState::handleError(
+			System::String::Format(
+				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
+				ex.getErrorCode()
+			)
+		);
+	}
+	catch (System::NullReferenceException^ ex)
+	{
+		ProgramState::handleError(
+			System::String::Format(
+				L"Przedmiot {0} nie posiada elementu nadrzêdnego! {1}",
+				item->getName(), ex->Message
+			)
+		);
+	}
+	finally
+	{
+		delete statement;
+	}
+}
+
+void DatabaseConnection::delDatabaseItemRecord(Item^ item)
+{
+	sql::PreparedStatement* statement;
+
+	try
+	{
+		statement =
+			this->conn->prepareStatement("DELETE FROM items WHERE id = ?");
+
+		statement->setString(1, msclr::interop::marshal_as<std::string>(item->getUUID()->ToString()));
+
+		statement->execute();
+	}
+	catch (sql::SQLException ex)
+	{
+		ProgramState::handleError(
+			System::String::Format(
+				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
+				ex.getErrorCode()
+			)
+		);
+	}
+	finally
+	{
+		delete statement;
+	}
+}
+
+void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
+{
+	sql::PreparedStatement* statement;
+
+	try
+	{
+		System::String^ parentID = store->parent()->getUUID() == nullptr
+			? "root"
+			: store->parent()->getUUID()->ToString();
+
+		statement =
+			this->conn->prepareStatement("INSERT INTO items VALUES(?, ?, ?, ?)");
+
+		statement->setString(
+			1, msclr::interop::marshal_as<std::string>(store->getUUID()->ToString())
+		);
+		statement->setString(
+			2, msclr::interop::marshal_as<std::string>(store->getName())
+		);
+		statement->setString(
+			3, msclr::interop::marshal_as<std::string>(store->getDescription())
+		);
+		statement->setString(
+			4, msclr::interop::marshal_as<std::string>(parentID)
+		);
+
+		statement->execute();
+	}
+	catch (sql::SQLException ex)
+	{
+		ProgramState::handleError(
+			System::String::Format(
+				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
+				ex.getErrorCode()
+			)
+		);
+	}
+	catch (System::NullReferenceException^ ex)
+	{
+		ProgramState::handleError(
+			System::String::Format(
+				L"Pojemnik {0} nie posiada elementu nadrzêdnego!",
+				store->getName()
+			)
+		);
+	}
+	finally
+	{
+		delete statement;
+	}
+}
+
+void Program::DataReadWrite::DatabaseConnection::delDatabaseStoreRecord(Compartment^ store)
+{
+	sql::PreparedStatement* statement;
+
+	try
+	{
+		statement =
+			this->conn->prepareStatement("DELETE FROM compartments WHERE id = ?");
+
+		statement->setString(
+			1, msclr::interop::marshal_as<std::string>(store->getUUID()->ToString())
+		);
+
+		statement->execute();
+	}
+	catch (sql::SQLException ex)
+	{
+		ProgramState::handleError(
+			System::String::Format(
+				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
+				ex.getErrorCode()
+			)
+		);
+	}
+	finally
+	{
+		delete statement;
+	}
+}
+
+void Program::DataReadWrite::DatabaseConnection::emptyDatabaseItemTable()
+{
+	sql::PreparedStatement* statement;
+
+	try
+	{
+		statement =
+			this->conn->prepareStatement("DELETE FROM items");
+
+		statement->execute();
+	}
+	catch (sql::SQLException ex)
+	{
+		ProgramState::handleError(
+			System::String::Format(
+				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
+				ex.getErrorCode()
+			)
+		);
+	}
+	finally
+	{
+		delete statement;
+	}
+}
+
+void Program::DataReadWrite::DatabaseConnection::emptyDatabaseStoreTable()
+{
+	sql::PreparedStatement* statement;
+
+	try
+	{
+		statement =
+			this->conn->prepareStatement("DELETE FROM compartments");
+
+		statement->execute();
+	}
+	catch (sql::SQLException ex)
+	{
+		ProgramState::handleError(
+			System::String::Format(
+				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
+				ex.getErrorCode()
+			)
+		);
+	}
+	finally
+	{
+		delete statement;
+	}
+}
+
+void DatabaseConnection::purge(Compartment^ store)
+{
+	sql::PreparedStatement* statement;
+
+	for each (IPlaceable ^ element in store->getContents())
+	{
+		if (element->GetType()->Name != "Compartment") continue;
+
+		try
+		{
+			statement =
+				this->conn->prepareStatement("DELETE FROM items WHERE parent = ?");
+
+			statement->setString(1, msclr::interop::marshal_as<std::string>(element->getUUID()->ToString()));
+
+			statement->execute();
+		}
+		catch (sql::SQLException ex)
+		{
+			ProgramState::handleError(
+				System::String::Format(
+					L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
+					ex.getErrorCode()
+				)
+			);
+		}
+		finally
+		{
+			delete statement;
+		}
+		this->purge(dynamic_cast<Compartment^>(element));
+
+
+		try
+		{
+			statement =
+				this->conn->prepareStatement("DELETE FROM items WHERE parent = ?");
+
+			statement->setString(1, msclr::interop::marshal_as<std::string>(store->getUUID()->ToString()));
+
+			statement->execute();
+		}
+		catch (sql::SQLException ex)
+		{
+			ProgramState::handleError(
+				System::String::Format(
+					L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
+					ex.getErrorCode()
+				)
+			);
+		}
+		finally
+		{
+			delete statement;
+		}
+	}
 }

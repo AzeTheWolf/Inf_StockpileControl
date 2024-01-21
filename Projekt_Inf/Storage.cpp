@@ -37,3 +37,8 @@ System::Collections::Generic::List<Item^>^ Program::CStore::getItems()
 
 	return list;
 }
+
+System::Guid^ Program::CStore::getUUID()
+{
+	return nullptr;
+}

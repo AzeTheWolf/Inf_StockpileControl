@@ -27,7 +27,7 @@ namespace Program {
 		virtual void setParent(CStore^ parent);
 		virtual System::String^ getPath();
 
-		virtual System::Guid^ getUUID();
+		virtual System::Guid^ getUUID() override;
 	};
 
 }
