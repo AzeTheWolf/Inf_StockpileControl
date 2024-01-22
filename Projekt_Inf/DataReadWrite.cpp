@@ -372,6 +372,37 @@ void Program::DataReadWrite::DatabaseConnection::emptyDatabaseStoreTable()
 	}
 }
 
+void DatabaseConnection::updateDatabaseItemEntry(System::String^ col, System::String^ value, System::Guid^ uuid)
+{
+	sql::PreparedStatement* statement;
+
+	try
+	{
+		statement =
+			this->conn->prepareStatement(
+				msclr::interop::marshal_as<std::string>("UPDATE items SET "+col+" = ? WHERE id = ?")
+			);
+
+		statement->setString(1, msclr::interop::marshal_as<std::string>(value));
+		statement->setString(2, msclr::interop::marshal_as<std::string>(uuid->ToString()));
+
+		statement->execute();
+	}
+	catch (sql::SQLException ex)
+	{
+		ProgramState::handleError(
+			System::String::Format(
+				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
+				ex.getErrorCode()
+			)
+		);
+	}
+	finally
+	{
+		delete statement;
+	}
+}
+
 void DatabaseConnection::purge(Compartment^ store)
 {
 	sql::PreparedStatement* statement;

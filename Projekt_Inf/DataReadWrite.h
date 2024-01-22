@@ -65,6 +65,8 @@ namespace Program
 			void emptyDatabaseItemTable();
 			void emptyDatabaseStoreTable();
 
+			void updateDatabaseItemEntry(System::String^ col, System::String^ value, System::Guid^ uuid);
+
 			void purge(Compartment^ store);
 		};
 	}

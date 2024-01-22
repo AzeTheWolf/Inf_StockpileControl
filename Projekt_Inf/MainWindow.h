@@ -1072,6 +1072,14 @@ namespace Program {
 		{
 			this->itemList->SelectedItems[0]->ForeColor = System::Drawing::Color::Black;
 		}
+
+		ProgramState::dbc->openConnection();
+		ProgramState::dbc->updateDatabaseItemEntry(
+			"quantity",
+			this->itemQuantityNUD->Value.ToString(),
+			item->getUUID()
+		);
+		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void setItemExpiryBtn_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -1102,6 +1110,14 @@ namespace Program {
 		{
 			this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::Transparent;
 		}
+
+		ProgramState::dbc->openConnection();
+		ProgramState::dbc->updateDatabaseItemEntry(
+			"expires",
+			this->itemExpiryDTP->Value.ToString(),
+			item->getUUID()
+		);
+		ProgramState::dbc->closeConnection();
 	}
 	private: System::Void delItemExpiryBtn_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -1120,6 +1136,14 @@ namespace Program {
 		item->setDecayDate(System::DateTime(9999, 1, 1, 0, 0, 0, 0));
 		this->itemList->SelectedItems[0]->SubItems[2]->Text = L"-";
 		this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::Transparent;
+
+		ProgramState::dbc->openConnection();
+		ProgramState::dbc->updateDatabaseItemEntry(
+			"expires",
+			System::DateTime(9999, 1, 1, 0, 0, 0, 0).ToString(),
+			item->getUUID()
+		);
+		ProgramState::dbc->closeConnection();
 	}
 	private: System::Void setNotifQtyBtn_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -1146,6 +1170,14 @@ namespace Program {
 		{
 			this->itemList->SelectedItems[0]->ForeColor = System::Drawing::Color::Black;
 		}
+
+		ProgramState::dbc->openConnection();
+		ProgramState::dbc->updateDatabaseItemEntry(
+			"alertLevel",
+			this->alertQtyNUD->Value.ToString(),
+			item->getUUID()
+		);
+		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void odœwie¿ToolStripMenuItem1_Click(System::Object^ sender, System::EventArgs^ e)
