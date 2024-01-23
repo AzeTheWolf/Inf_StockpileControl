@@ -78,4 +78,7 @@ System::Guid^ Program::Compartment::getUUID()
     return this->uuid;
 }
 
-
+void Program::Compartment::__forceGUID(System::String^ guid)
+{
+    this->uuid = System::Guid::Parse(guid);
+}

@@ -27,12 +27,12 @@ namespace Program
 
 			System::Collections::Generic::List<PlaceableData^>^ contents;
 			System::UInt16 type;
+			System::String^ id;
 		};
 
 		ref class FileIO abstract sealed
 		{
 		private:
-
 			static System::Collections::Generic::List<PlaceableData^>^
 				_convert(System::Collections::Generic::List<IPlaceable^>^ input);
 			static void
@@ -44,6 +44,11 @@ namespace Program
 			static void read(System::String^ path);
 		};
 
+		public ref struct Relation
+		{
+			System::Guid^ child;
+			System::String^ parent;
+		};
 
 		ref class DatabaseConnection sealed
 		{
@@ -51,6 +56,7 @@ namespace Program
 			sql::mysql::MySQL_Driver* driver;
 			sql::Connection* conn;
 			bool isClosed = true;
+
 		public:
 			~DatabaseConnection();
 
@@ -68,6 +74,8 @@ namespace Program
 			void updateDatabaseItemEntry(System::String^ col, System::String^ value, System::Guid^ uuid);
 
 			void purge(Compartment^ store);
+
+			void loadFromDatabase();
 		};
 	}
 }

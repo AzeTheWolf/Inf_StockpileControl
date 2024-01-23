@@ -122,3 +122,8 @@ System::Guid^ Program::Item::getUUID()
 {
     return this->uuid;
 }
+
+void Program::Item::__forceGUID(System::String^ guid)
+{
+    this->uuid = System::Guid::Parse(guid);
+}

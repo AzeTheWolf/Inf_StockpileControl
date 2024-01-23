@@ -70,6 +70,7 @@ void FileIO::_deconvertAndPlace(List<PlaceableData^>^ input, CStore^ parent)
 
 			item->setAlertLevel(element->stockpileAlert);
 			item->setDecayDate(element->decaysOn);
+			item->__forceGUID(element->id);
 			parent->place(item);
 		}
 		else if (element->type == ElementType::COMPARTMENT)
@@ -79,6 +80,7 @@ void FileIO::_deconvertAndPlace(List<PlaceableData^>^ input, CStore^ parent)
 				element->description
 			);
 
+			store->__forceGUID(element->id);
 			parent->place(store);
 			FileIO::_deconvertAndPlace(element->contents, store);
 		}
@@ -249,7 +251,7 @@ void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
 			: store->parent()->getUUID()->ToString();
 
 		statement =
-			this->conn->prepareStatement("INSERT INTO items VALUES(?, ?, ?, ?)");
+			this->conn->prepareStatement("INSERT INTO compartments VALUES(?, ?, ?, ?)");
 
 		statement->setString(
 			1, msclr::interop::marshal_as<std::string>(store->getUUID()->ToString())
@@ -290,7 +292,7 @@ void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
 	}
 }
 
-void Program::DataReadWrite::DatabaseConnection::delDatabaseStoreRecord(Compartment^ store)
+void DatabaseConnection::delDatabaseStoreRecord(Compartment^ store)
 {
 	sql::PreparedStatement* statement;
 
@@ -419,6 +421,7 @@ void DatabaseConnection::purge(Compartment^ store)
 			statement->setString(1, msclr::interop::marshal_as<std::string>(element->getUUID()->ToString()));
 
 			statement->execute();
+			delete statement;
 		}
 		catch (sql::SQLException ex)
 		{
@@ -428,10 +431,6 @@ void DatabaseConnection::purge(Compartment^ store)
 					ex.getErrorCode()
 				)
 			);
-		}
-		finally
-		{
-			delete statement;
 		}
 		this->purge(dynamic_cast<Compartment^>(element));
 
@@ -444,6 +443,7 @@ void DatabaseConnection::purge(Compartment^ store)
 			statement->setString(1, msclr::interop::marshal_as<std::string>(store->getUUID()->ToString()));
 
 			statement->execute();
+			delete statement;
 		}
 		catch (sql::SQLException ex)
 		{
@@ -454,9 +454,76 @@ void DatabaseConnection::purge(Compartment^ store)
 				)
 			);
 		}
-		finally
-		{
-			delete statement;
-		}
 	}
+}
+
+void Program::DataReadWrite::DatabaseConnection::loadFromDatabase()
+{
+	sql::Statement* statement = this->conn->createStatement();
+
+	sql::ResultSet* resultStores = statement->executeQuery("SELECT * FROM compartments");
+
+	List<Compartment^>^ storeList = gcnew List<Compartment^>;
+	List<Relation^>^ storeRelList = gcnew List<Relation^>;
+
+	while (resultStores->next())
+	{
+		Compartment^ store = gcnew Compartment(
+			msclr::interop::marshal_as<System::String^>(resultStores->getString("name").asStdString()),
+			msclr::interop::marshal_as<System::String^>(resultStores->getString("description").asStdString())
+		);
+
+		System::String^ id
+			= msclr::interop::marshal_as<System::String^>(resultStores->getString("id").asStdString());
+		store->__forceGUID(id);
+		System::String^ parent 
+			= msclr::interop::marshal_as<System::String^>(resultStores->getString("parent").asStdString());
+
+		storeList->Add(store);
+
+		Relation^ rel = gcnew Relation;
+		rel->child = System::Guid::Parse(id);
+		rel->parent = parent;
+
+		storeRelList->Add(rel);
+	}
+
+	sql::ResultSet* resultItems = statement->executeQuery("SELECT * FROM items");
+
+	List<Item^>^ itemList = gcnew List<Item^>;
+	List<Relation^>^ itemRelList = gcnew List<Relation^>;
+
+	while (resultItems->next())
+	{
+		Item^ item = gcnew Item(
+			msclr::interop::marshal_as<System::String^>(resultItems->getString("name").asStdString()),
+			msclr::interop::marshal_as<System::String^>(resultItems->getString("description").asStdString()),
+			resultItems->getInt("quantity")
+		);
+
+		System::String^ id
+			= msclr::interop::marshal_as<System::String^>(resultStores->getString("id").asStdString());
+		item->__forceGUID(id);
+		item->setAlertLevel( resultItems->getInt("alertLevel") );
+		item->setDecayDate(
+			System::DateTime::Parse(
+				msclr::interop::marshal_as<System::String^>(resultStores->getString("expires").asStdString())
+			)
+		);
+
+		System::String^ parent
+			= msclr::interop::marshal_as<System::String^>(resultStores->getString("parent").asStdString());
+
+		itemList->Add(item);
+
+		Relation^ rel = gcnew Relation;
+		rel->child = System::Guid::Parse(id);
+		rel->parent = parent;
+
+		itemRelList->Add(rel);
+	}
+
+	delete resultItems;
+	delete resultStores;
+	delete statement;
 }

@@ -43,6 +43,7 @@ namespace Program {
 		virtual System::String^ getPath();
 
 		virtual System::Guid^ getUUID();
+		virtual void __forceGUID(System::String^ guid);
 	};
 
 }

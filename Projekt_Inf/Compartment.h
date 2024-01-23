@@ -28,6 +28,7 @@ namespace Program {
 		virtual System::String^ getPath();
 
 		virtual System::Guid^ getUUID() override;
+		virtual void __forceGUID(System::String^ guid);
 	};
 
 }
