@@ -12,6 +12,9 @@ namespace Program
 
 	namespace DataReadWrite
 	{
+		std::string wstring_utf8(const std::wstring& str);
+		std::wstring string_utf8(const std::string& str);
+
 		public enum ElementType { ITEM, COMPARTMENT };
 
 		[System::Serializable]

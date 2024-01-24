@@ -3,6 +3,8 @@
 namespace Program {
 	interface class IPlaceable;
 	ref class CStore;
+	ref class Item;
+	ref class Compartment;
 	namespace Helpers
 	{
 		ref class FindListViewItem
@@ -15,24 +17,18 @@ namespace Program {
 			bool isIn(System::Windows::Forms::ListViewItem^ lvi);
 		};
 
-		ref class FindPlaceableByGUID
-		{
-			System::Guid^ guid;
-
-		public:
-			FindPlaceableByGUID(System::Guid^ guid);
-
-			bool isIn(IPlaceable^ placeable);
-		};
-
 		ref class FindStoreByGUID
 		{
-			System::Guid^ guid;
+			System::String^ guid;
 
 		public:
-			FindStoreByGUID(System::Guid^ store);
+			FindStoreByGUID(System::String^ store);
 
 			bool isIn(CStore^ placeable);
 		};
+
+		IPlaceable^ FindByGUIDString(System::String^ string, System::Collections::Generic::List<Item^>^ list);
+		Compartment^ FindByGUIDString(System::String^ string, System::Collections::Generic::List<Compartment^>^ list);
+		CStore^ FindByGUIDString(System::String^ string, System::Collections::Generic::List<CStore^>^ list);
 	}	
 }

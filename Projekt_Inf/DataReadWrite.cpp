@@ -13,11 +13,15 @@
 
 #include <msclr/marshal_cppstd.h>
 
+#include <string>
+#include <codecvt>
+
 using namespace Program;
 using namespace Program::DataReadWrite;
 using namespace System::Xml::Serialization;
 using namespace System::Collections::Generic;
 using namespace System::IO;
+using namespace msclr::interop;
 
 
 System::Collections::Generic::List<PlaceableData^>^ FileIO::_convert(System::Collections::Generic::List<IPlaceable^>^ input)
@@ -136,6 +140,9 @@ DatabaseConnection::DatabaseConnection()
 		this->driver = sql::mysql::get_driver_instance();
 		this->driver = sql::mysql::get_mysql_driver_instance();
 		this->conn = this->driver->connect("tcp://localhost:3306/stockpilemanager", "usr", "passwd");
+		
+		this->conn->setClientOption("OPT_CHARSET_NAME", "utf8");
+		this->conn->setClientOption("OPT_SET_CHARSET_NAME", "utf8");
 	}
 	catch (sql::SQLException& e)
 	{
@@ -188,7 +195,8 @@ void DatabaseConnection::putDatabaseItemRecord(Item^ item)
 		statement->setInt(3, item->getAlertLevel());
 		statement->setString(4,
 			msclr::interop::marshal_as<std::string>(item->getDecayDate().ToString()));
-		statement->setString(5, msclr::interop::marshal_as<std::string>(item->getName()));
+		statement->setString(5, 
+			wstring_utf8(msclr::interop::marshal_as<std::wstring>(item->getName())));
 		statement->setString(6, msclr::interop::marshal_as<std::string>(item->getDescription()));
 		statement->setString(7, msclr::interop::marshal_as<std::string>(parentID));
 
@@ -436,7 +444,6 @@ void DatabaseConnection::purge(Compartment^ store)
 				this->conn->prepareStatement("DELETE FROM items WHERE parent = ?");
 
 			statement->setString(1, msclr::interop::marshal_as<std::string>(store->getUUID()->ToString()));
-
 			statement->execute();
 			delete statement;
 		}
@@ -454,6 +461,7 @@ void DatabaseConnection::purge(Compartment^ store)
 
 void Program::DataReadWrite::DatabaseConnection::loadFromDatabase()
 {
+
 	sql::Statement* statement = this->conn->createStatement();
 
 	sql::ResultSet* resultStores = statement->executeQuery("SELECT * FROM compartments");
@@ -461,15 +469,24 @@ void Program::DataReadWrite::DatabaseConnection::loadFromDatabase()
 	List<Compartment^>^ storeList = gcnew List<Compartment^>;
 	List<Relation^>^ storeRelList = gcnew List<Relation^>;
 
+	while (ProgramState::masterStorage->getContents()->Count > 0)
+	{
+		ProgramState::masterStorage->remove(ProgramState::masterStorage->getContents()[0]);
+	}
+
 	while (resultStores->next())
 	{
 		Compartment^ store = gcnew Compartment(
-			msclr::interop::marshal_as<System::String^>(resultStores->getString("name").asStdString()),
-			msclr::interop::marshal_as<System::String^>(resultStores->getString("description").asStdString())
+			marshal_as<System::String^>(
+				string_utf8(resultStores->getString("name").asStdString())
+			),
+			marshal_as<System::String^>(
+				string_utf8(resultStores->getString("description").asStdString())
+			)
 		);
 
 		System::String^ id
-			= msclr::interop::marshal_as<System::String^>(resultStores->getString("id").asStdString());
+			= msclr::interop::marshal_as<System::String^>(resultStores->getString("uuid").asStdString());
 		store->__forceGUID(id);
 		System::String^ parent 
 			= msclr::interop::marshal_as<System::String^>(resultStores->getString("parent").asStdString());
@@ -491,23 +508,27 @@ void Program::DataReadWrite::DatabaseConnection::loadFromDatabase()
 	while (resultItems->next())
 	{
 		Item^ item = gcnew Item(
-			msclr::interop::marshal_as<System::String^>(resultItems->getString("name").asStdString()),
-			msclr::interop::marshal_as<System::String^>(resultItems->getString("description").asStdString()),
+			marshal_as<System::String^>(
+				string_utf8(resultItems->getString("name").asStdString())
+			),
+			marshal_as<System::String^>(
+				string_utf8(resultItems->getString("description").asStdString())
+			),
 			resultItems->getInt("quantity")
 		);
 
 		System::String^ id
-			= msclr::interop::marshal_as<System::String^>(resultStores->getString("id").asStdString());
+			= msclr::interop::marshal_as<System::String^>(resultItems->getString("uuid").asStdString());
 		item->__forceGUID(id);
 		item->setAlertLevel( resultItems->getInt("alertLevel") );
 		item->setDecayDate(
 			System::DateTime::Parse(
-				msclr::interop::marshal_as<System::String^>(resultStores->getString("expires").asStdString())
+				msclr::interop::marshal_as<System::String^>(resultItems->getString("expires").asStdString())
 			)
 		);
 
 		System::String^ parent
-			= msclr::interop::marshal_as<System::String^>(resultStores->getString("parent").asStdString());
+			= msclr::interop::marshal_as<System::String^>(resultItems->getString("parent").asStdString());
 
 		itemList->Add(item);
 
@@ -519,53 +540,27 @@ void Program::DataReadWrite::DatabaseConnection::loadFromDatabase()
 
 	}
 
-	List<IPlaceable^>^ castList;
 	List<CStore^>^ storeCastList = dynamic_cast<List<CStore^>^>(storeList);
-
-	castList = dynamic_cast<List<IPlaceable^>^>(itemList);
-
 	for each (Relation ^ rel in itemRelList)
 	{
-		IPlaceable^ child = castList->Find(
-			gcnew System::Predicate<IPlaceable^>(
-				gcnew Helpers::FindPlaceableByGUID(rel->child), &Helpers::FindPlaceableByGUID::isIn
-			)
-		);
+		IPlaceable^ child = Helpers::FindByGUIDString(rel->child->ToString(), itemList);
+
+		if (child == nullptr) continue;
 
 		CStore^ parent = rel->parent == "root"
 			? ProgramState::masterStorage
-			: storeCastList->Find(
-				gcnew System::Predicate<CStore^>(
-					gcnew Helpers::FindStoreByGUID(
-						System::Guid::Parse(rel->parent)
-					),
-					&Helpers::FindStoreByGUID::isIn
-				)
-		);
+			: Helpers::FindByGUIDString(rel->parent->ToString(), storeList);
 
 		parent->place(child);
 	}
 
-	castList = dynamic_cast<List<IPlaceable^>^>(storeList);
-
 	for each (Relation ^ rel in storeRelList)
 	{
-		IPlaceable^ child = castList->Find(
-			gcnew System::Predicate<IPlaceable^>(
-				gcnew Helpers::FindPlaceableByGUID(rel->child), &Helpers::FindPlaceableByGUID::isIn
-			)
-		);
+		Compartment^ child = Helpers::FindByGUIDString(rel->child->ToString(), storeList);
 
 		CStore^ parent = rel->parent == "root"
 			? ProgramState::masterStorage
-			: storeCastList->Find(
-				gcnew System::Predicate<CStore^>(
-					gcnew Helpers::FindStoreByGUID(
-						System::Guid::Parse(rel->parent)
-					),
-					&Helpers::FindStoreByGUID::isIn
-				)
-			);
+			: Helpers::FindByGUIDString(rel->parent->ToString(), storeList);
 
 		parent->place(child);
 	}
@@ -573,4 +568,16 @@ void Program::DataReadWrite::DatabaseConnection::loadFromDatabase()
 	delete resultItems;
 	delete resultStores;
 	delete statement;
+}
+
+std::string Program::DataReadWrite::wstring_utf8(const std::wstring& str)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
+	return myconv.to_bytes(str);
+}
+
+std::wstring Program::DataReadWrite::string_utf8(const std::string& str)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
+	return myconv.from_bytes(str);
 }

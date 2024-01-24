@@ -113,6 +113,8 @@ namespace Program {
 	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog1;
 	private: System::Windows::Forms::OpenFileDialog^ openFileDialog;
 	private: System::Windows::Forms::ToolStripMenuItem^ saveAsTSMI;
+	private: System::Windows::Forms::ToolStripSeparator^ toolStripSeparator1;
+	private: System::Windows::Forms::ToolStripMenuItem^ openDbTSMI;
 
 
 
@@ -201,6 +203,8 @@ namespace Program {
 			this->delAllItemsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->openFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->openDbTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->windowTabsTC->SuspendLayout();
 			this->storageTabPage->SuspendLayout();
 			this->groupBox2->SuspendLayout();
@@ -593,9 +597,9 @@ namespace Program {
 			// 
 			// fileTSMI
 			// 
-			this->fileTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+			this->fileTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {
 				this->openTSMI, this->saveTSMI,
-					this->saveAsTSMI
+					this->saveAsTSMI, this->toolStripSeparator1, this->openDbTSMI
 			});
 			this->fileTSMI->Name = L"fileTSMI";
 			this->fileTSMI->Size = System::Drawing::Size(46, 24);
@@ -604,21 +608,21 @@ namespace Program {
 			// openTSMI
 			// 
 			this->openTSMI->Name = L"openTSMI";
-			this->openTSMI->Size = System::Drawing::Size(168, 26);
+			this->openTSMI->Size = System::Drawing::Size(237, 26);
 			this->openTSMI->Text = L"Otwórz";
 			this->openTSMI->Click += gcnew System::EventHandler(this, &MainWindow::openTSMI_Click);
 			// 
 			// saveTSMI
 			// 
 			this->saveTSMI->Name = L"saveTSMI";
-			this->saveTSMI->Size = System::Drawing::Size(168, 26);
+			this->saveTSMI->Size = System::Drawing::Size(237, 26);
 			this->saveTSMI->Text = L"Zapisz";
 			this->saveTSMI->Click += gcnew System::EventHandler(this, &MainWindow::saveTSMI_Click);
 			// 
 			// saveAsTSMI
 			// 
 			this->saveAsTSMI->Name = L"saveAsTSMI";
-			this->saveAsTSMI->Size = System::Drawing::Size(168, 26);
+			this->saveAsTSMI->Size = System::Drawing::Size(237, 26);
 			this->saveAsTSMI->Text = L"Zapisz Jako";
 			this->saveAsTSMI->Click += gcnew System::EventHandler(this, &MainWindow::saveAsTSMI_Click);
 			// 
@@ -679,6 +683,18 @@ namespace Program {
 			// 
 			this->openFileDialog->DefaultExt = L"xml";
 			this->openFileDialog->Filter = L"*.xml|";
+			// 
+			// openDbTSMI
+			// 
+			this->openDbTSMI->Name = L"openDbTSMI";
+			this->openDbTSMI->Size = System::Drawing::Size(237, 26);
+			this->openDbTSMI->Text = L"Otwórz z bazy danych";
+			this->openDbTSMI->Click += gcnew System::EventHandler(this, &MainWindow::openDbTSMI_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this->toolStripSeparator1->Name = L"toolStripSeparator1";
+			this->toolStripSeparator1->Size = System::Drawing::Size(234, 6);
 			// 
 			// MainWindow
 			// 
@@ -1301,6 +1317,12 @@ namespace Program {
 		DataReadWrite::FileIO::read(this->openFileDialog->FileName);
 		ComponentMutator::regenerateTree(this->StorageViewTV);
 		ComponentMutator::regenerateList(this->itemList);
+	}
+
+	private: System::Void openDbTSMI_Click(System::Object^ sender, System::EventArgs^ e) {
+		ProgramState::dbc->loadFromDatabase();
+		ComponentMutator::regenerateList(this->itemList);
+		ComponentMutator::regenerateTree(this->StorageViewTV);
 	}
 }; // end class
 } // end namespace
