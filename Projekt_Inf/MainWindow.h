@@ -799,9 +799,7 @@ namespace Program {
 
 		this->StorageViewTV->SelectedNode = selNode;
 
-		ProgramState::dbc->openConnection();
 		ProgramState::dbc->putDatabaseStoreRecord(item);
-		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void addItemBtn_Click(System::Object^ sender, System::EventArgs^ e)
@@ -884,9 +882,7 @@ namespace Program {
 
 		this->StorageViewTV->SelectedNode = selNode;
 
-		ProgramState::dbc->openConnection();
 		ProgramState::dbc->putDatabaseItemRecord(item);
-		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^ e) 
@@ -958,7 +954,6 @@ namespace Program {
 		auto listItems = target->getItems(); // All items in selected Compartment
 
 		// for each item in selected Compartment
-		ProgramState::dbc->openConnection();
 		for each (Item ^ item in listItems)
 		{
 			ComponentMutator::removeFromListView(this->itemList, item);
@@ -970,7 +965,6 @@ namespace Program {
 		selNode->Nodes->Clear();
 
 		this->StorageViewTV->SelectedNode = selNode;
-		ProgramState::dbc->closeConnection();
 	}
 	
 	private: System::Void emptyMainTSMI_Click(System::Object^ sender, System::EventArgs^ e)
@@ -991,12 +985,10 @@ namespace Program {
 		this->itemList->Items->Clear();
 		this->StorageViewTV->SelectedNode = this->StorageViewTV->Nodes[0];
 
-		ProgramState::dbc->openConnection();
 
 		ProgramState::dbc->emptyDatabaseItemTable();
 		ProgramState::dbc->emptyDatabaseStoreTable();
 
-		ProgramState::dbc->closeConnection();
 	}
 	
 	private: System::Void findItemBtn_Click(System::Object^ sender, System::EventArgs^ e) 
@@ -1073,13 +1065,11 @@ namespace Program {
 			this->itemList->SelectedItems[0]->ForeColor = System::Drawing::Color::Black;
 		}
 
-		ProgramState::dbc->openConnection();
 		ProgramState::dbc->updateDatabaseItemEntry(
 			"quantity",
 			this->itemQuantityNUD->Value.ToString(),
 			item->getUUID()
 		);
-		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void setItemExpiryBtn_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -1111,13 +1101,11 @@ namespace Program {
 			this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::Transparent;
 		}
 
-		ProgramState::dbc->openConnection();
 		ProgramState::dbc->updateDatabaseItemEntry(
 			"expires",
 			this->itemExpiryDTP->Value.ToString(),
 			item->getUUID()
 		);
-		ProgramState::dbc->closeConnection();
 	}
 	private: System::Void delItemExpiryBtn_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -1137,13 +1125,11 @@ namespace Program {
 		this->itemList->SelectedItems[0]->SubItems[2]->Text = L"-";
 		this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::Transparent;
 
-		ProgramState::dbc->openConnection();
 		ProgramState::dbc->updateDatabaseItemEntry(
 			"expires",
 			System::DateTime(9999, 1, 1, 0, 0, 0, 0).ToString(),
 			item->getUUID()
 		);
-		ProgramState::dbc->closeConnection();
 	}
 	private: System::Void setNotifQtyBtn_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -1171,13 +1157,11 @@ namespace Program {
 			this->itemList->SelectedItems[0]->ForeColor = System::Drawing::Color::Black;
 		}
 
-		ProgramState::dbc->openConnection();
 		ProgramState::dbc->updateDatabaseItemEntry(
 			"alertLevel",
 			this->alertQtyNUD->Value.ToString(),
 			item->getUUID()
 		);
-		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void odœwie¿ToolStripMenuItem1_Click(System::Object^ sender, System::EventArgs^ e)
@@ -1214,10 +1198,8 @@ namespace Program {
 
 		this->itemList->BeginUpdate();
 
-		ProgramState::dbc->openConnection();
 		ProgramState::dbc->purge(target);
 		ProgramState::dbc->delDatabaseStoreRecord(target);
-		ProgramState::dbc->closeConnection();
 
 		auto listItems = target->getItems(); // All items in selected Compartment
 
@@ -1257,9 +1239,7 @@ namespace Program {
 		selNode->Remove();
 		ComponentMutator::removeFromListView(this->itemList, target);
 		
-		ProgramState::dbc->openConnection();
 		ProgramState::dbc->delDatabaseItemRecord(target);
-		ProgramState::dbc->closeConnection();
 		
 		lockStructTabBtns();
 	}

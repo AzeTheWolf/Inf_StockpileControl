@@ -5,6 +5,7 @@
 #include "Item.h"
 #include "Compartment.h"
 #include "Storage.h"
+#include "Finders.h"
 
 #include <mysql_connection.h>
 #include <mysql_driver.h>
@@ -128,20 +129,13 @@ void Program::DataReadWrite::FileIO::read(System::String^ path)
 	}
 }
 
-Program::DataReadWrite::DatabaseConnection::~DatabaseConnection()
+DatabaseConnection::DatabaseConnection()
 {
-	this->closeConnection();
-}
-
-void DatabaseConnection::openConnection()
-{
-	if (!isClosed) return;
-
 	try
 	{
+		this->driver = sql::mysql::get_driver_instance();
 		this->driver = sql::mysql::get_mysql_driver_instance();
 		this->conn = this->driver->connect("tcp://localhost:3306/stockpilemanager", "usr", "passwd");
-		this->isClosed = false;
 	}
 	catch (sql::SQLException& e)
 	{
@@ -154,13 +148,25 @@ void DatabaseConnection::openConnection()
 	}
 }
 
+Program::DataReadWrite::DatabaseConnection::~DatabaseConnection()
+{
+	this->conn->close();
+	delete this->conn;
+	delete this->driver;
+}
+
+void DatabaseConnection::openConnection()
+{
+	if (!isClosed) return;
+
+	
+}
+
 void DatabaseConnection::closeConnection()
 {
 	if (!isClosed)
 	{
-		delete this->conn;
-		delete this->driver;
-		this->isClosed = true;
+		
 	}
 }
 
@@ -187,6 +193,8 @@ void DatabaseConnection::putDatabaseItemRecord(Item^ item)
 		statement->setString(7, msclr::interop::marshal_as<std::string>(parentID));
 
 		statement->execute();
+		delete statement;
+
 	}
 	catch (sql::SQLException ex)
 	{
@@ -205,10 +213,6 @@ void DatabaseConnection::putDatabaseItemRecord(Item^ item)
 				item->getName(), ex->Message
 			)
 		);
-	}
-	finally
-	{
-		delete statement;
 	}
 }
 
@@ -267,6 +271,8 @@ void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
 		);
 
 		statement->execute();
+		delete statement;
+
 	}
 	catch (sql::SQLException ex)
 	{
@@ -281,14 +287,11 @@ void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
 	{
 		ProgramState::handleError(
 			System::String::Format(
-				L"Pojemnik {0} nie posiada elementu nadrzêdnego!",
-				store->getName()
+				L"Pojemnik {0} nie posiada elementu nadrzêdnego! {1}",
+				store->getName(),
+				ex->StackTrace
 			)
 		);
-	}
-	finally
-	{
-		delete statement;
 	}
 }
 
@@ -306,6 +309,8 @@ void DatabaseConnection::delDatabaseStoreRecord(Compartment^ store)
 		);
 
 		statement->execute();
+		delete statement;
+
 	}
 	catch (sql::SQLException ex)
 	{
@@ -315,10 +320,6 @@ void DatabaseConnection::delDatabaseStoreRecord(Compartment^ store)
 				ex.getErrorCode()
 			)
 		);
-	}
-	finally
-	{
-		delete statement;
 	}
 }
 
@@ -332,6 +333,8 @@ void Program::DataReadWrite::DatabaseConnection::emptyDatabaseItemTable()
 			this->conn->prepareStatement("DELETE FROM items");
 
 		statement->execute();
+		delete statement;
+
 	}
 	catch (sql::SQLException ex)
 	{
@@ -341,10 +344,6 @@ void Program::DataReadWrite::DatabaseConnection::emptyDatabaseItemTable()
 				ex.getErrorCode()
 			)
 		);
-	}
-	finally
-	{
-		delete statement;
 	}
 }
 
@@ -358,6 +357,8 @@ void Program::DataReadWrite::DatabaseConnection::emptyDatabaseStoreTable()
 			this->conn->prepareStatement("DELETE FROM compartments");
 
 		statement->execute();
+		delete statement;
+
 	}
 	catch (sql::SQLException ex)
 	{
@@ -367,10 +368,6 @@ void Program::DataReadWrite::DatabaseConnection::emptyDatabaseStoreTable()
 				ex.getErrorCode()
 			)
 		);
-	}
-	finally
-	{
-		delete statement;
 	}
 }
 
@@ -389,6 +386,8 @@ void DatabaseConnection::updateDatabaseItemEntry(System::String^ col, System::St
 		statement->setString(2, msclr::interop::marshal_as<std::string>(uuid->ToString()));
 
 		statement->execute();
+		delete statement;
+
 	}
 	catch (sql::SQLException ex)
 	{
@@ -398,10 +397,6 @@ void DatabaseConnection::updateDatabaseItemEntry(System::String^ col, System::St
 				ex.getErrorCode()
 			)
 		);
-	}
-	finally
-	{
-		delete statement;
 	}
 }
 
@@ -521,6 +516,58 @@ void Program::DataReadWrite::DatabaseConnection::loadFromDatabase()
 		rel->parent = parent;
 
 		itemRelList->Add(rel);
+
+	}
+
+	List<IPlaceable^>^ castList;
+	List<CStore^>^ storeCastList = dynamic_cast<List<CStore^>^>(storeList);
+
+	castList = dynamic_cast<List<IPlaceable^>^>(itemList);
+
+	for each (Relation ^ rel in itemRelList)
+	{
+		IPlaceable^ child = castList->Find(
+			gcnew System::Predicate<IPlaceable^>(
+				gcnew Helpers::FindPlaceableByGUID(rel->child), &Helpers::FindPlaceableByGUID::isIn
+			)
+		);
+
+		CStore^ parent = rel->parent == "root"
+			? ProgramState::masterStorage
+			: storeCastList->Find(
+				gcnew System::Predicate<CStore^>(
+					gcnew Helpers::FindStoreByGUID(
+						System::Guid::Parse(rel->parent)
+					),
+					&Helpers::FindStoreByGUID::isIn
+				)
+		);
+
+		parent->place(child);
+	}
+
+	castList = dynamic_cast<List<IPlaceable^>^>(storeList);
+
+	for each (Relation ^ rel in storeRelList)
+	{
+		IPlaceable^ child = castList->Find(
+			gcnew System::Predicate<IPlaceable^>(
+				gcnew Helpers::FindPlaceableByGUID(rel->child), &Helpers::FindPlaceableByGUID::isIn
+			)
+		);
+
+		CStore^ parent = rel->parent == "root"
+			? ProgramState::masterStorage
+			: storeCastList->Find(
+				gcnew System::Predicate<CStore^>(
+					gcnew Helpers::FindStoreByGUID(
+						System::Guid::Parse(rel->parent)
+					),
+					&Helpers::FindStoreByGUID::isIn
+				)
+			);
+
+		parent->place(child);
 	}
 
 	delete resultItems;

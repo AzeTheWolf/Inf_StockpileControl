@@ -58,6 +58,7 @@ namespace Program
 			bool isClosed = true;
 
 		public:
+			DatabaseConnection();
 			~DatabaseConnection();
 
 			void openConnection();
