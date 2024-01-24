@@ -115,6 +115,7 @@ namespace Program {
 	private: System::Windows::Forms::ToolStripMenuItem^ saveAsTSMI;
 	private: System::Windows::Forms::ToolStripSeparator^ toolStripSeparator1;
 	private: System::Windows::Forms::ToolStripMenuItem^ openDbTSMI;
+	private: System::Windows::Forms::ToolStripMenuItem^ disconnectDbTSMI;
 
 
 
@@ -195,6 +196,8 @@ namespace Program {
 			this->openTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->saveTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->saveAsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
+			this->openDbTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->magazynTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->emptyMainTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->refreshStoreTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -203,8 +206,7 @@ namespace Program {
 			this->delAllItemsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->openFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
-			this->openDbTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
+			this->disconnectDbTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->windowTabsTC->SuspendLayout();
 			this->storageTabPage->SuspendLayout();
 			this->groupBox2->SuspendLayout();
@@ -597,9 +599,9 @@ namespace Program {
 			// 
 			// fileTSMI
 			// 
-			this->fileTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {
+			this->fileTSMI->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {
 				this->openTSMI, this->saveTSMI,
-					this->saveAsTSMI, this->toolStripSeparator1, this->openDbTSMI
+					this->saveAsTSMI, this->toolStripSeparator1, this->openDbTSMI, this->disconnectDbTSMI
 			});
 			this->fileTSMI->Name = L"fileTSMI";
 			this->fileTSMI->Size = System::Drawing::Size(46, 24);
@@ -625,6 +627,18 @@ namespace Program {
 			this->saveAsTSMI->Size = System::Drawing::Size(237, 26);
 			this->saveAsTSMI->Text = L"Zapisz Jako";
 			this->saveAsTSMI->Click += gcnew System::EventHandler(this, &MainWindow::saveAsTSMI_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this->toolStripSeparator1->Name = L"toolStripSeparator1";
+			this->toolStripSeparator1->Size = System::Drawing::Size(234, 6);
+			// 
+			// openDbTSMI
+			// 
+			this->openDbTSMI->Name = L"openDbTSMI";
+			this->openDbTSMI->Size = System::Drawing::Size(237, 26);
+			this->openDbTSMI->Text = L"Otwórz z bazy danych";
+			this->openDbTSMI->Click += gcnew System::EventHandler(this, &MainWindow::openDbTSMI_Click);
 			// 
 			// magazynTSMI
 			// 
@@ -684,17 +698,12 @@ namespace Program {
 			this->openFileDialog->DefaultExt = L"xml";
 			this->openFileDialog->Filter = L"*.xml|";
 			// 
-			// openDbTSMI
+			// disconnectDbTSMI
 			// 
-			this->openDbTSMI->Name = L"openDbTSMI";
-			this->openDbTSMI->Size = System::Drawing::Size(237, 26);
-			this->openDbTSMI->Text = L"Otwórz z bazy danych";
-			this->openDbTSMI->Click += gcnew System::EventHandler(this, &MainWindow::openDbTSMI_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this->toolStripSeparator1->Name = L"toolStripSeparator1";
-			this->toolStripSeparator1->Size = System::Drawing::Size(234, 6);
+			this->disconnectDbTSMI->Name = L"disconnectDbTSMI";
+			this->disconnectDbTSMI->Size = System::Drawing::Size(237, 26);
+			this->disconnectDbTSMI->Text = L"Od³¹cz bazê danych";
+			this->disconnectDbTSMI->Click += gcnew System::EventHandler(this, &MainWindow::disconnectDbTSMI_Click);
 			// 
 			// MainWindow
 			// 
@@ -815,7 +824,9 @@ namespace Program {
 
 		this->StorageViewTV->SelectedNode = selNode;
 
+		ProgramState::dbc->openConnection();
 		ProgramState::dbc->putDatabaseStoreRecord(item);
+		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void addItemBtn_Click(System::Object^ sender, System::EventArgs^ e)
@@ -898,7 +909,9 @@ namespace Program {
 
 		this->StorageViewTV->SelectedNode = selNode;
 
+		ProgramState::dbc->openConnection();
 		ProgramState::dbc->putDatabaseItemRecord(item);
+		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void MainWindow_Load(System::Object^ sender, System::EventArgs^ e) 
@@ -970,13 +983,15 @@ namespace Program {
 		auto listItems = target->getItems(); // All items in selected Compartment
 
 		// for each item in selected Compartment
+		ProgramState::dbc->openConnection();
 		for each (Item ^ item in listItems)
 		{
 			ComponentMutator::removeFromListView(this->itemList, item);
 			ProgramState::dbc->delDatabaseItemRecord(item);
 		}
 		this->itemList->EndUpdate();
-		ProgramState::dbc->purge(dynamic_cast<Compartment^>(target));
+		ProgramState::dbc->purge(dynamic_cast<Compartment^>(target), false);
+		ProgramState::dbc->closeConnection();
 		target->zero();
 		selNode->Nodes->Clear();
 
@@ -1001,10 +1016,10 @@ namespace Program {
 		this->itemList->Items->Clear();
 		this->StorageViewTV->SelectedNode = this->StorageViewTV->Nodes[0];
 
-
+		ProgramState::dbc->openConnection();
 		ProgramState::dbc->emptyDatabaseItemTable();
 		ProgramState::dbc->emptyDatabaseStoreTable();
-
+		ProgramState::dbc->closeConnection();
 	}
 	
 	private: System::Void findItemBtn_Click(System::Object^ sender, System::EventArgs^ e) 
@@ -1081,11 +1096,13 @@ namespace Program {
 			this->itemList->SelectedItems[0]->ForeColor = System::Drawing::Color::Black;
 		}
 
+		ProgramState::dbc->openConnection();
 		ProgramState::dbc->updateDatabaseItemEntry(
 			"quantity",
 			this->itemQuantityNUD->Value.ToString(),
 			item->getUUID()
 		);
+		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void setItemExpiryBtn_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -1117,11 +1134,13 @@ namespace Program {
 			this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::Transparent;
 		}
 
+		ProgramState::dbc->openConnection();
 		ProgramState::dbc->updateDatabaseItemEntry(
 			"expires",
 			this->itemExpiryDTP->Value.ToString(),
 			item->getUUID()
 		);
+		ProgramState::dbc->closeConnection();
 	}
 	private: System::Void delItemExpiryBtn_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -1141,11 +1160,13 @@ namespace Program {
 		this->itemList->SelectedItems[0]->SubItems[2]->Text = L"-";
 		this->itemList->SelectedItems[0]->BackColor = System::Drawing::Color::Transparent;
 
+		ProgramState::dbc->openConnection();
 		ProgramState::dbc->updateDatabaseItemEntry(
 			"expires",
 			System::DateTime(9999, 1, 1, 0, 0, 0, 0).ToString(),
 			item->getUUID()
 		);
+		ProgramState::dbc->closeConnection();
 	}
 	private: System::Void setNotifQtyBtn_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -1173,11 +1194,13 @@ namespace Program {
 			this->itemList->SelectedItems[0]->ForeColor = System::Drawing::Color::Black;
 		}
 
+		ProgramState::dbc->openConnection();
 		ProgramState::dbc->updateDatabaseItemEntry(
 			"alertLevel",
 			this->alertQtyNUD->Value.ToString(),
 			item->getUUID()
 		);
+		ProgramState::dbc->closeConnection();
 	}
 
 	private: System::Void odœwie¿ToolStripMenuItem1_Click(System::Object^ sender, System::EventArgs^ e)
@@ -1214,8 +1237,10 @@ namespace Program {
 
 		this->itemList->BeginUpdate();
 
-		ProgramState::dbc->purge(target);
+		ProgramState::dbc->openConnection();
+		ProgramState::dbc->purge(target, true);
 		ProgramState::dbc->delDatabaseStoreRecord(target);
+		ProgramState::dbc->closeConnection();
 
 		auto listItems = target->getItems(); // All items in selected Compartment
 
@@ -1255,7 +1280,9 @@ namespace Program {
 		selNode->Remove();
 		ComponentMutator::removeFromListView(this->itemList, target);
 		
+		ProgramState::dbc->openConnection();
 		ProgramState::dbc->delDatabaseItemRecord(target);
+		ProgramState::dbc->closeConnection();
 		
 		lockStructTabBtns();
 	}
@@ -1291,6 +1318,8 @@ namespace Program {
 	}
 	private: System::Void saveTSMI_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
+		ProgramState::isRemote = false;
+
 		if (DataReadWrite::FileIO::path == nullptr)
 		{
 			if (this->saveFileDialog1->ShowDialog() == Windows::Forms::DialogResult::OK)
@@ -1301,38 +1330,49 @@ namespace Program {
 		}
 
 		DataReadWrite::FileIO::write();
+		this->ActiveForm->Text = System::String::Format(ProgramState::titleTemplate, L"[" + DataReadWrite::FileIO::path + "]");
 	}
 	private: System::Void saveAsTSMI_Click(System::Object^ sender, System::EventArgs^ e) {
+		ProgramState::isRemote = false;
+
 		if (this->saveFileDialog1->ShowDialog() != Windows::Forms::DialogResult::OK)
 			return;
 		
 		DataReadWrite::FileIO::path = this->saveFileDialog1->FileName;
 		DataReadWrite::FileIO::write();
+		this->ActiveForm->Text = System::String::Format(ProgramState::titleTemplate, L"[" + DataReadWrite::FileIO::path + "]");
 	}
 	private: System::Void openTSMI_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
+		ProgramState::isRemote = false;
+
 		if (this->openFileDialog->ShowDialog() != Windows::Forms::DialogResult::OK)
 			return;
 
 		DataReadWrite::FileIO::read(this->openFileDialog->FileName);
 		ComponentMutator::regenerateTree(this->StorageViewTV);
 		ComponentMutator::regenerateList(this->itemList);
+		this->ActiveForm->Text = System::String::Format(ProgramState::titleTemplate, L"["+DataReadWrite::FileIO::path+"]");
 	}
 
 	private: System::Void openDbTSMI_Click(System::Object^ sender, System::EventArgs^ e) {
+		ProgramState::isRemote = true;
+		FileIO::path = nullptr;
+
+		this->ActiveForm->Text = System::String::Format(ProgramState::titleTemplate, L"[Zawartoœæ zdalna]");
+
+		ProgramState::dbc->openConnection();
 		ProgramState::dbc->loadFromDatabase();
+		ProgramState::dbc->closeConnection();
 		ComponentMutator::regenerateList(this->itemList);
 		ComponentMutator::regenerateTree(this->StorageViewTV);
+	}
+	private: System::Void disconnectDbTSMI_Click(System::Object^ sender, System::EventArgs^ e) {
+		ProgramState::isRemote = false;
+		this->ActiveForm->Text = System::String::Format(ProgramState::titleTemplate, L"");
 	}
 }; // end class
 } // end namespace
 
 // TODOS:
-// Warnings tab [?]
-// Editing functions
-// Database
-//		- item editing
-//		- loading
 // Docs
-// Warning manager
-// Item list column widths

@@ -77,7 +77,7 @@ namespace Program
 
 			void updateDatabaseItemEntry(System::String^ col, System::String^ value, System::Guid^ uuid);
 
-			void purge(Compartment^ store);
+			void purge(Compartment^ store, bool doRootElement);
 
 			void loadFromDatabase();
 		};

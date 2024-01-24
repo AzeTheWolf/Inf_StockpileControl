@@ -14,6 +14,8 @@ namespace Program {
 	public:
 		static CStore^ masterStorage = gcnew CStore;
 		static DatabaseConnection^ dbc = gcnew DatabaseConnection;
+		static bool isRemote = false;
+		static System::String^ titleTemplate = L"Magazyn {0}";
 
 		static bool confirmBox(System::String^ title, System::String^ text, MessageBoxIcon icon)
 		{

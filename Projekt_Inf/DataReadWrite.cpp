@@ -137,12 +137,7 @@ DatabaseConnection::DatabaseConnection()
 {
 	try
 	{
-		this->driver = sql::mysql::get_driver_instance();
 		this->driver = sql::mysql::get_mysql_driver_instance();
-		this->conn = this->driver->connect("tcp://localhost:3306/stockpilemanager", "usr", "passwd");
-		
-		this->conn->setClientOption("OPT_CHARSET_NAME", "utf8");
-		this->conn->setClientOption("OPT_SET_CHARSET_NAME", "utf8");
 	}
 	catch (sql::SQLException& e)
 	{
@@ -157,28 +152,33 @@ DatabaseConnection::DatabaseConnection()
 
 Program::DataReadWrite::DatabaseConnection::~DatabaseConnection()
 {
-	this->conn->close();
-	delete this->conn;
+	this->closeConnection();
 	delete this->driver;
 }
 
 void DatabaseConnection::openConnection()
 {
+	if (!ProgramState::isRemote) return;
 	if (!isClosed) return;
 
-	
+	this->conn = this->driver->connect("tcp://localhost:3306/stockpilemanager", "usr", "passwd");
+
+	this->conn->setClientOption("OPT_CHARSET_NAME", "utf8");
+	this->conn->setClientOption("OPT_SET_CHARSET_NAME", "utf8");
 }
 
 void DatabaseConnection::closeConnection()
 {
 	if (!isClosed)
 	{
-		
+		this->conn->close();
+		delete this->conn;
 	}
 }
 
 void DatabaseConnection::putDatabaseItemRecord(Item^ item)
 {
+	if (!ProgramState::isRemote) return;
 	sql::PreparedStatement* statement;
 
 	try
@@ -226,12 +226,13 @@ void DatabaseConnection::putDatabaseItemRecord(Item^ item)
 
 void DatabaseConnection::delDatabaseItemRecord(Item^ item)
 {
+	if (!ProgramState::isRemote) return;
 	sql::PreparedStatement* statement;
 
 	try
 	{
 		statement =
-			this->conn->prepareStatement("DELETE FROM items WHERE id = ?");
+			this->conn->prepareStatement("DELETE FROM items WHERE uuid = ?");
 
 		statement->setString(1, msclr::interop::marshal_as<std::string>(item->getUUID()->ToString()));
 
@@ -254,6 +255,7 @@ void DatabaseConnection::delDatabaseItemRecord(Item^ item)
 
 void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
 {
+	if (!ProgramState::isRemote) return;
 	sql::PreparedStatement* statement;
 
 	try
@@ -305,12 +307,13 @@ void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
 
 void DatabaseConnection::delDatabaseStoreRecord(Compartment^ store)
 {
+	if (!ProgramState::isRemote) return;
 	sql::PreparedStatement* statement;
 
 	try
 	{
 		statement =
-			this->conn->prepareStatement("DELETE FROM compartments WHERE id = ?");
+			this->conn->prepareStatement("DELETE FROM compartments WHERE uuid = ?");
 
 		statement->setString(
 			1, msclr::interop::marshal_as<std::string>(store->getUUID()->ToString())
@@ -333,6 +336,7 @@ void DatabaseConnection::delDatabaseStoreRecord(Compartment^ store)
 
 void Program::DataReadWrite::DatabaseConnection::emptyDatabaseItemTable()
 {
+	if (!ProgramState::isRemote) return;
 	sql::PreparedStatement* statement;
 
 	try
@@ -357,6 +361,7 @@ void Program::DataReadWrite::DatabaseConnection::emptyDatabaseItemTable()
 
 void Program::DataReadWrite::DatabaseConnection::emptyDatabaseStoreTable()
 {
+	if (!ProgramState::isRemote) return;
 	sql::PreparedStatement* statement;
 
 	try
@@ -381,13 +386,14 @@ void Program::DataReadWrite::DatabaseConnection::emptyDatabaseStoreTable()
 
 void DatabaseConnection::updateDatabaseItemEntry(System::String^ col, System::String^ value, System::Guid^ uuid)
 {
+	if (!ProgramState::isRemote) return;
 	sql::PreparedStatement* statement;
 
 	try
 	{
 		statement =
 			this->conn->prepareStatement(
-				msclr::interop::marshal_as<std::string>("UPDATE items SET "+col+" = ? WHERE id = ?")
+				msclr::interop::marshal_as<std::string>("UPDATE items SET "+col+" = ? WHERE uuid = ?")
 			);
 
 		statement->setString(1, msclr::interop::marshal_as<std::string>(value));
@@ -408,8 +414,9 @@ void DatabaseConnection::updateDatabaseItemEntry(System::String^ col, System::St
 	}
 }
 
-void DatabaseConnection::purge(Compartment^ store)
+void DatabaseConnection::purge(Compartment^ store, bool doRootElement)
 {
+	if (!ProgramState::isRemote) return;
 	sql::PreparedStatement* statement;
 
 	for each (IPlaceable ^ element in store->getContents())
@@ -435,13 +442,14 @@ void DatabaseConnection::purge(Compartment^ store)
 				)
 			);
 		}
-		this->purge(dynamic_cast<Compartment^>(element));
+		this->purge(dynamic_cast<Compartment^>(element), true);
+	}
 
-
+	if (!doRootElement) return;
 		try
 		{
 			statement =
-				this->conn->prepareStatement("DELETE FROM items WHERE parent = ?");
+				this->conn->prepareStatement("DELETE FROM compartments WHERE uuid = ?");
 
 			statement->setString(1, msclr::interop::marshal_as<std::string>(store->getUUID()->ToString()));
 			statement->execute();
@@ -456,12 +464,11 @@ void DatabaseConnection::purge(Compartment^ store)
 				)
 			);
 		}
-	}
 }
 
 void Program::DataReadWrite::DatabaseConnection::loadFromDatabase()
 {
-
+	if (!ProgramState::isRemote) return;
 	sql::Statement* statement = this->conn->createStatement();
 
 	sql::ResultSet* resultStores = statement->executeQuery("SELECT * FROM compartments");
