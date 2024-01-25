@@ -812,7 +812,7 @@ namespace Program {
 		);
 
 		// Create associated TreeNode
-		TreeNode^ node = ComponentMutator::createTreeNode(item, true);
+		TreeNode^ node = Helpers::ComponentMutator::createTreeNode(item, true);
 
 		// Put in master storage and add to graph
 		targetStorage->place(item);
@@ -885,7 +885,7 @@ namespace Program {
 		);
 
 		// Create associated TreeNode
-		TreeNode^ node = ComponentMutator::createTreeNode(item, false);
+		TreeNode^ node = Helpers::ComponentMutator::createTreeNode(item, false);
 
 		// Put in master storage and add to graph
 		targetStorage->place(item);
@@ -987,7 +987,7 @@ namespace Program {
 		ProgramState::dbc->openConnection();
 		for each (Item ^ item in listItems)
 		{
-			ComponentMutator::removeFromListView(this->itemList, item);
+			Helpers::ComponentMutator::removeFromListView(this->itemList, item);
 			ProgramState::dbc->delDatabaseItemRecord(item);
 		}
 		this->itemList->EndUpdate();
@@ -1206,7 +1206,7 @@ namespace Program {
 
 	private: System::Void odœwie¿ToolStripMenuItem1_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		ComponentMutator::regenerateList(this->itemList);
+		Helpers::ComponentMutator::regenerateList(this->itemList);
 	}
 	private: System::Void delStoreBtn_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
@@ -1247,7 +1247,7 @@ namespace Program {
 
 		for each (Item ^ item in listItems)
 		{
-			ComponentMutator::removeFromListView(this->itemList, item);
+			Helpers::ComponentMutator::removeFromListView(this->itemList, item);
 		}
 		this->itemList->EndUpdate();
 
@@ -1279,7 +1279,7 @@ namespace Program {
 
 		target->parent()->remove(target);
 		selNode->Remove();
-		ComponentMutator::removeFromListView(this->itemList, target);
+		Helpers::ComponentMutator::removeFromListView(this->itemList, target);
 		
 		ProgramState::dbc->openConnection();
 		ProgramState::dbc->delDatabaseItemRecord(target);
@@ -1290,7 +1290,7 @@ namespace Program {
 	
 	private: System::Void refreshStoreTSMI_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		ComponentMutator::regenerateTree(this->StorageViewTV);
+		Helpers::ComponentMutator::regenerateTree(this->StorageViewTV);
 	}
 	private: System::Void delAllItemsTSMI_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (!Helpers::BoxHandler::confirmBox(
@@ -1302,7 +1302,7 @@ namespace Program {
 		this->itemList->Items->Clear();
 
 		this->StorageViewTV->BeginUpdate();
-		ComponentMutator::removeAllItems(this->StorageViewTV->Nodes[0]);
+		Helpers::ComponentMutator::removeAllItems(this->StorageViewTV->Nodes[0]);
 		this->StorageViewTV->EndUpdate();
 
 
@@ -1351,8 +1351,8 @@ namespace Program {
 			return;
 
 		DataReadWrite::FileIO::read(this->openFileDialog->FileName);
-		ComponentMutator::regenerateTree(this->StorageViewTV);
-		ComponentMutator::regenerateList(this->itemList);
+		Helpers::ComponentMutator::regenerateTree(this->StorageViewTV);
+		Helpers::ComponentMutator::regenerateList(this->itemList);
 		this->ActiveForm->Text = System::String::Format(ProgramState::titleTemplate, L"["+DataReadWrite::FileIO::path+"]");
 	}
 
@@ -1365,8 +1365,8 @@ namespace Program {
 		ProgramState::dbc->openConnection();
 		ProgramState::dbc->loadFromDatabase();
 		ProgramState::dbc->closeConnection();
-		ComponentMutator::regenerateList(this->itemList);
-		ComponentMutator::regenerateTree(this->StorageViewTV);
+		Helpers::ComponentMutator::regenerateList(this->itemList);
+		Helpers::ComponentMutator::regenerateTree(this->StorageViewTV);
 	}
 	private: System::Void disconnectDbTSMI_Click(System::Object^ sender, System::EventArgs^ e) {
 		ProgramState::isRemote = false;

@@ -5,26 +5,29 @@ namespace Program
 {
 	ref class Item;
 
-	ref class ComponentMutator abstract sealed
+	namespace Helpers
 	{
-	private:
-		static System::Collections::Generic::List<System::Windows::Forms::TreeNode^>^ _flattenTree(
-			System::Windows::Forms::TreeNode^ root
-		);
-	public:
-		static void removeFromListView(System::Windows::Forms::ListView^ component, Item^ item);
-		static void addChildrenToNode(
-			System::Windows::Forms::TreeNode^ parent,
-			System::Collections::Generic::List<IPlaceable^>^ elements
-		);
+		ref class ComponentMutator abstract sealed
+		{
+		private:
+			static System::Collections::Generic::List<System::Windows::Forms::TreeNode^>^ _flattenTree(
+				System::Windows::Forms::TreeNode^ root
+			);
+		public:
+			static void removeFromListView(System::Windows::Forms::ListView^ component, Item^ item);
+			static void addChildrenToNode(
+				System::Windows::Forms::TreeNode^ parent,
+				System::Collections::Generic::List<IPlaceable^>^ elements
+			);
 
-		static System::Windows::Forms::TreeNode^ createTreeNode(IPlaceable^ item, bool isStore);
-		static System::Windows::Forms::ListViewItem^ createListItem(Item^ item);
+			static System::Windows::Forms::TreeNode^ createTreeNode(IPlaceable^ item, bool isStore);
+			static System::Windows::Forms::ListViewItem^ createListItem(Item^ item);
 
-		static void removeAllItems(System::Windows::Forms::TreeNode^ root);
+			static void removeAllItems(System::Windows::Forms::TreeNode^ root);
 
-		static void regenerateTree(System::Windows::Forms::TreeView^ tree);
-		static void regenerateList(System::Windows::Forms::ListView^ list);
-	};
+			static void regenerateTree(System::Windows::Forms::TreeView^ tree);
+			static void regenerateList(System::Windows::Forms::ListView^ list);
+		};
+	}
 }
 

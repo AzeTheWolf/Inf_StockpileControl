@@ -10,7 +10,7 @@ using namespace System::Collections::Generic;
 using namespace Program::Helpers;
 using namespace Program;
 
-List<TreeNode^>^ Program::ComponentMutator::_flattenTree(TreeNode^ root)
+List<TreeNode^>^ ComponentMutator::_flattenTree(TreeNode^ root)
 {
 	List<TreeNode^>^ list = 
 		gcnew List<TreeNode^>;
@@ -30,7 +30,7 @@ List<TreeNode^>^ Program::ComponentMutator::_flattenTree(TreeNode^ root)
 	return list;
 }
 
-void Program::ComponentMutator::removeFromListView(ListView^ component, Item^ item)
+void ComponentMutator::removeFromListView(ListView^ component, Item^ item)
 {
 	auto list = component->Items;
 
@@ -53,7 +53,7 @@ void Program::ComponentMutator::removeFromListView(ListView^ component, Item^ it
 	}
 }
 
-TreeNode^ Program::ComponentMutator::createTreeNode(IPlaceable^ item, bool isStore)
+TreeNode^ ComponentMutator::createTreeNode(IPlaceable^ item, bool isStore)
 {
 	TreeNode^ node = gcnew TreeNode();
 	node->Text = item->getName();
@@ -67,7 +67,7 @@ TreeNode^ Program::ComponentMutator::createTreeNode(IPlaceable^ item, bool isSto
 	return node;
 }
 
-ListViewItem^ Program::ComponentMutator::createListItem(Item^ item)
+ListViewItem^ ComponentMutator::createListItem(Item^ item)
 {
 	ListViewItem^ listItem = gcnew ListViewItem;
 	listItem->Text = item->getName();
@@ -81,7 +81,7 @@ ListViewItem^ Program::ComponentMutator::createListItem(Item^ item)
 	return listItem;
 }
 
-void Program::ComponentMutator::removeAllItems(System::Windows::Forms::TreeNode^ root)
+void ComponentMutator::removeAllItems(System::Windows::Forms::TreeNode^ root)
 {
 	List<TreeNode^>^ list = ComponentMutator::_flattenTree(root);
 
@@ -94,7 +94,7 @@ void Program::ComponentMutator::removeAllItems(System::Windows::Forms::TreeNode^
 	}
 }
 
-void Program::ComponentMutator::regenerateTree(System::Windows::Forms::TreeView^ tree)
+void ComponentMutator::regenerateTree(System::Windows::Forms::TreeView^ tree)
 {
 	tree->BeginUpdate();
 
@@ -105,7 +105,7 @@ void Program::ComponentMutator::regenerateTree(System::Windows::Forms::TreeView^
 	tree->EndUpdate();
 }
 
-void Program::ComponentMutator::regenerateList(System::Windows::Forms::ListView^ list)
+void ComponentMutator::regenerateList(System::Windows::Forms::ListView^ list)
 {
 	list->Items->Clear();
 	System::Collections::Generic::List<Item^>^ itemList = ProgramState::masterStorage->getItems();
@@ -134,7 +134,7 @@ void Program::ComponentMutator::regenerateList(System::Windows::Forms::ListView^
 	list->EndUpdate();
 }
 
-void Program::ComponentMutator::addChildrenToNode(System::Windows::Forms::TreeNode^ parent, System::Collections::Generic::List<IPlaceable^>^ elements)
+void ComponentMutator::addChildrenToNode(System::Windows::Forms::TreeNode^ parent, System::Collections::Generic::List<IPlaceable^>^ elements)
 {
 	for each (IPlaceable ^ element in elements)
 	{
