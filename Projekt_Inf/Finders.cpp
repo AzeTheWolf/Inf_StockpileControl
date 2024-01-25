@@ -17,39 +17,17 @@ bool Helpers::FindListViewItem::isIn(System::Windows::Forms::ListViewItem^ lvi)
 	return lvi->Tag == this->Tag;
 }
 
-Program::Helpers::FindStoreByGUID::FindStoreByGUID(System::String^ guid)
+Program::Helpers::FindByGUID::FindByGUID(System::String^ guid)
 {
 	this->guid = guid;
 }
 
-bool Program::Helpers::FindStoreByGUID::isIn(CStore^ store)
+bool Program::Helpers::FindByGUID::isInStore(Compartment^ element)
 {
-	return this->guid == store->getUUID()->ToString();
+	return this->guid == element->getUUID()->ToString();
 }
 
-IPlaceable^ Program::Helpers::FindByGUIDString(System::String^ string, System::Collections::Generic::List<Item^>^ list)
+bool Program::Helpers::FindByGUID::isInItem(Item^ element)
 {
-	for each (IPlaceable ^ item in list)
-	{
-		if (item->getUUID()->ToString() == string) return item;
-	}
-	return nullptr;
-}
-
-Compartment^ Program::Helpers::FindByGUIDString(System::String^ string, System::Collections::Generic::List<Compartment^>^ list)
-{
-	for each (Compartment ^ item in list)
-	{
-		if (item->getUUID()->ToString() == string) return item;
-	}
-	return nullptr;
-}
-
-CStore^ Program::Helpers::FindByGUIDString(System::String^ string, System::Collections::Generic::List<CStore^>^ list)
-{
-	for each (CStore ^ item in list)
-	{
-		if (item->getUUID()->ToString() == string) return item;
-	}
-	return nullptr;
+	return this->guid == element->getUUID()->ToString();
 }

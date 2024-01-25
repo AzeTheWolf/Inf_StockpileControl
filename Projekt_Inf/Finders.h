@@ -17,18 +17,19 @@ namespace Program {
 			bool isIn(System::Windows::Forms::ListViewItem^ lvi);
 		};
 
-		ref class FindStoreByGUID
+		ref class FindByGUID
 		{
 			System::String^ guid;
 
 		public:
-			FindStoreByGUID(System::String^ store);
+			FindByGUID(System::String^ guid);
 
-			bool isIn(CStore^ placeable);
+			bool isInStore(Compartment^ element);
+			bool isInItem(Item^ element);
 		};
 
-		IPlaceable^ FindByGUIDString(System::String^ string, System::Collections::Generic::List<Item^>^ list);
-		Compartment^ FindByGUIDString(System::String^ string, System::Collections::Generic::List<Compartment^>^ list);
-		CStore^ FindByGUIDString(System::String^ string, System::Collections::Generic::List<CStore^>^ list);
+		//IPlaceable^ FindByGUIDString(System::String^ string, System::Collections::Generic::List<Item^>^ list);
+		//Compartment^ FindByGUIDString(System::String^ string, System::Collections::Generic::List<Compartment^>^ list);
+		//CStore^ FindByGUIDString(System::String^ string, System::Collections::Generic::List<CStore^>^ list);
 	}	
 }

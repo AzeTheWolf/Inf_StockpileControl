@@ -551,24 +551,46 @@ void Program::DataReadWrite::DatabaseConnection::loadFromDatabase()
 	List<CStore^>^ storeCastList = dynamic_cast<List<CStore^>^>(storeList);
 	for each (Relation ^ rel in itemRelList)
 	{
-		IPlaceable^ child = Helpers::FindByGUIDString(rel->child->ToString(), itemList);
+		IPlaceable^ child =
+			itemList->Find(
+				gcnew System::Predicate<Item^>(
+					gcnew Helpers::FindByGUID(rel->child->ToString()), 
+					&Helpers::FindByGUID::isInItem
+				)
+			);
 
 		if (child == nullptr) continue;
 
 		CStore^ parent = rel->parent == "root"
 			? ProgramState::masterStorage
-			: Helpers::FindByGUIDString(rel->parent->ToString(), storeList);
+			: storeList->Find(
+				gcnew System::Predicate<Compartment^>(
+					gcnew Helpers::FindByGUID(rel->parent), 
+					&Helpers::FindByGUID::isInStore
+				)
+			);
 
 		parent->place(child);
 	}
 
 	for each (Relation ^ rel in storeRelList)
 	{
-		Compartment^ child = Helpers::FindByGUIDString(rel->child->ToString(), storeList);
+		Compartment^ child =
+			storeList->Find(
+				gcnew System::Predicate<Compartment^>(
+					gcnew Helpers::FindByGUID(rel->child->ToString()),
+					&Helpers::FindByGUID::isInStore
+				)
+			);
 
 		CStore^ parent = rel->parent == "root"
 			? ProgramState::masterStorage
-			: Helpers::FindByGUIDString(rel->parent->ToString(), storeList);
+			: storeList->Find(
+				gcnew System::Predicate<Compartment^>(
+					gcnew Helpers::FindByGUID(rel->parent),
+					&Helpers::FindByGUID::isInStore
+				)
+			);
 
 		parent->place(child);
 	}
