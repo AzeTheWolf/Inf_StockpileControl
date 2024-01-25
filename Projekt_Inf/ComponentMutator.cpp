@@ -3,6 +3,7 @@
 #include "Compartment.h"
 #include "Finders.h"
 #include "ProgramState.h"
+#include "BoxHandler.h"
 
 using namespace System::Windows::Forms;
 using namespace System::Collections::Generic;
@@ -147,7 +148,7 @@ void Program::ComponentMutator::addChildrenToNode(System::Windows::Forms::TreeNo
 			Compartment^ compartment = dynamic_cast<Compartment^>(element);
 			if (compartment == nullptr)
 			{
-				ProgramState::handleError(
+				Helpers::BoxHandler::handleError(
 					System::String::Format(L"Element {0} nie zawiera prawid³owego wskaŸnika", 
 						element->getName())
 				);

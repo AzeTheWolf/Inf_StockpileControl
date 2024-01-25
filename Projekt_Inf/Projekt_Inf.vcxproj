@@ -140,6 +140,7 @@
     <ClCompile Include="Finders.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="BoxHandler.cpp" />
     <ClCompile Include="Storage.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +153,7 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="IPlaceable.h" />
+    <ClInclude Include="BoxHandler.h" />
     <ClInclude Include="ProgramState.h" />
     <ClInclude Include="Storage.h" />
   </ItemGroup>

@@ -6,6 +6,7 @@
 #include "Compartment.h"
 #include "Storage.h"
 #include "Finders.h"
+#include "BoxHandler.h"
 
 #include <mysql_connection.h>
 #include <mysql_driver.h>
@@ -126,7 +127,7 @@ void Program::DataReadWrite::FileIO::read(System::String^ path)
 	}
 	catch (FileNotFoundException^ ex)
 	{
-		ProgramState::handleError(
+		Helpers::BoxHandler::handleError(
 			System::String::Format(L"Nie mo¿na otworzyæ pliku: {0}", ex->FileName)
 		);
 		return;
@@ -141,7 +142,7 @@ DatabaseConnection::DatabaseConnection()
 	}
 	catch (sql::SQLException& e)
 	{
-		ProgramState::handleError(
+		Helpers::BoxHandler::handleError(
 			System::String::Format(
 				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
 				e.getErrorCode()
@@ -206,7 +207,7 @@ void DatabaseConnection::putDatabaseItemRecord(Item^ item)
 	}
 	catch (sql::SQLException ex)
 	{
-		ProgramState::handleError(
+		Helpers::BoxHandler::handleError(
 			System::String::Format(
 				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
 				ex.getErrorCode()
@@ -215,7 +216,7 @@ void DatabaseConnection::putDatabaseItemRecord(Item^ item)
 	}
 	catch (System::NullReferenceException^ ex)
 	{
-		ProgramState::handleError(
+		Helpers::BoxHandler::handleError(
 			System::String::Format(
 				L"Przedmiot {0} nie posiada elementu nadrzêdnego! {1}",
 				item->getName(), ex->Message
@@ -240,7 +241,7 @@ void DatabaseConnection::delDatabaseItemRecord(Item^ item)
 	}
 	catch (sql::SQLException ex)
 	{
-		ProgramState::handleError(
+		Helpers::BoxHandler::handleError(
 			System::String::Format(
 				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
 				ex.getErrorCode()
@@ -286,7 +287,7 @@ void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
 	}
 	catch (sql::SQLException ex)
 	{
-		ProgramState::handleError(
+		Helpers::BoxHandler::handleError(
 			System::String::Format(
 				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
 				ex.getErrorCode()
@@ -295,7 +296,7 @@ void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
 	}
 	catch (System::NullReferenceException^ ex)
 	{
-		ProgramState::handleError(
+		Helpers::BoxHandler::handleError(
 			System::String::Format(
 				L"Pojemnik {0} nie posiada elementu nadrzêdnego! {1}",
 				store->getName(),
@@ -325,7 +326,7 @@ void DatabaseConnection::delDatabaseStoreRecord(Compartment^ store)
 	}
 	catch (sql::SQLException ex)
 	{
-		ProgramState::handleError(
+		Helpers::BoxHandler::handleError(
 			System::String::Format(
 				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
 				ex.getErrorCode()
@@ -350,7 +351,7 @@ void Program::DataReadWrite::DatabaseConnection::emptyDatabaseItemTable()
 	}
 	catch (sql::SQLException ex)
 	{
-		ProgramState::handleError(
+		Helpers::BoxHandler::handleError(
 			System::String::Format(
 				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
 				ex.getErrorCode()
@@ -375,7 +376,7 @@ void Program::DataReadWrite::DatabaseConnection::emptyDatabaseStoreTable()
 	}
 	catch (sql::SQLException ex)
 	{
-		ProgramState::handleError(
+		Helpers::BoxHandler::handleError(
 			System::String::Format(
 				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
 				ex.getErrorCode()
@@ -405,7 +406,7 @@ void DatabaseConnection::updateDatabaseItemEntry(System::String^ col, System::St
 	}
 	catch (sql::SQLException ex)
 	{
-		ProgramState::handleError(
+		Helpers::BoxHandler::handleError(
 			System::String::Format(
 				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
 				ex.getErrorCode()
@@ -435,7 +436,7 @@ void DatabaseConnection::purge(Compartment^ store, bool doRootElement)
 		}
 		catch (sql::SQLException ex)
 		{
-			ProgramState::handleError(
+			Helpers::BoxHandler::handleError(
 				System::String::Format(
 					L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
 					ex.getErrorCode()
@@ -457,7 +458,7 @@ void DatabaseConnection::purge(Compartment^ store, bool doRootElement)
 		}
 		catch (sql::SQLException ex)
 		{
-			ProgramState::handleError(
+			Helpers::BoxHandler::handleError(
 				System::String::Format(
 					L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
 					ex.getErrorCode()

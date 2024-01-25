@@ -5,6 +5,7 @@
 #include "Compartment.h"
 #include "ComponentMutator.h"
 #include "DataReadWrite.h"
+#include "BoxHandler.h"
 
 using namespace System;
 using namespace System::ComponentModel;
@@ -800,7 +801,7 @@ namespace Program {
 		// guard: cast failed
 		if (targetStorage == nullptr)
 		{
-			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			Helpers::BoxHandler::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
 			return;
 		}
 
@@ -872,7 +873,7 @@ namespace Program {
 		// guard: cast failed
 		if (targetStorage == nullptr)
 		{
-			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			Helpers::BoxHandler::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
 			return;
 		}
 
@@ -968,11 +969,11 @@ namespace Program {
 
 		if (target == nullptr)
 		{
-			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			Helpers::BoxHandler::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
 			return;
 		}
 
-		if (!ProgramState::confirmBox(
+		if (!Helpers::BoxHandler::confirmBox(
 			L"Potwierdzenie",
 			L"Czy na pewno chcesz opró¿niæ element " + selNode->Text + "? Tej czynnoœci nie mo¿na cofn¹æ",
 			MessageBoxIcon::Warning
@@ -1001,7 +1002,7 @@ namespace Program {
 	private: System::Void emptyMainTSMI_Click(System::Object^ sender, System::EventArgs^ e)
 	{
 		clearErrors();
-		if (!ProgramState::confirmBox(
+		if (!Helpers::BoxHandler::confirmBox(
 			L"Potwierdzenie",
 			L"Czy na pewno chcesz opró¿niæ magazyn g³ówny? Tej czynnoœci nie mo¿na cofn¹æ!",
 			MessageBoxIcon::Warning
@@ -1030,7 +1031,7 @@ namespace Program {
 
 		if (item == nullptr)
 		{
-			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			Helpers::BoxHandler::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
 			return;
 		}
 
@@ -1063,7 +1064,7 @@ namespace Program {
 
 		if (item == nullptr)
 		{
-			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			Helpers::BoxHandler::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
 			return;
 		}
 
@@ -1080,7 +1081,7 @@ namespace Program {
 
 		if (item == nullptr)
 		{
-			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			Helpers::BoxHandler::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
 			return;
 		}
 
@@ -1114,7 +1115,7 @@ namespace Program {
 
 		if (item == nullptr)
 		{
-			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			Helpers::BoxHandler::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
 			return;
 		}
 
@@ -1152,7 +1153,7 @@ namespace Program {
 
 		if (item == nullptr)
 		{
-			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			Helpers::BoxHandler::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
 			return;
 		}
 
@@ -1178,7 +1179,7 @@ namespace Program {
 
 		if (item == nullptr)
 		{
-			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			Helpers::BoxHandler::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
 			return;
 		}
 
@@ -1211,7 +1212,7 @@ namespace Program {
 	{
 		clearErrors();
 
-		if (!ProgramState::confirmBox(
+		if (!Helpers::BoxHandler::confirmBox(
 			L"Potwierdzenie",
 			L"Czy na pewno chcesz usun¹æ pojemnik i ca³¹ jego zawartoœæ? Tej czynnoœci nie mo¿na cofn¹æ",
 			MessageBoxIcon::Warning
@@ -1231,7 +1232,7 @@ namespace Program {
 
 		if (target == nullptr)
 		{
-			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
+			Helpers::BoxHandler::handleError(L"Wybrany element nie zawiera prawid³owego wska¿nika");
 			return;
 		}
 
@@ -1272,7 +1273,7 @@ namespace Program {
 
 		if (target == nullptr)
 		{
-			ProgramState::handleError(L"Wybrany element nie zawiera prawid³owego wskaŸnika.");
+			Helpers::BoxHandler::handleError(L"Wybrany element nie zawiera prawid³owego wskaŸnika.");
 			return;
 		}
 
@@ -1292,7 +1293,7 @@ namespace Program {
 		ComponentMutator::regenerateTree(this->StorageViewTV);
 	}
 	private: System::Void delAllItemsTSMI_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (!ProgramState::confirmBox(
+		if (!Helpers::BoxHandler::confirmBox(
 			L"Potwierdzenie",
 			L"Czy na pewno chcesz usun¹æ pojemnik i ca³¹ jego zawartoœæ? Tej czynnoœci nie mo¿na cofn¹æ",
 			MessageBoxIcon::Warning
