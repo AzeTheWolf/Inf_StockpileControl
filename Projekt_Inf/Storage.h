@@ -14,14 +14,12 @@ namespace Program {
 		CStore();
 		void place(IPlaceable^ object);
 		void remove(IPlaceable^ object);
-		void sendTo(IPlaceable^ item, CStore^ other);
 		virtual System::Collections::Generic::List<Item^>^ getItems();
 
-		System::Collections::Generic::List<IPlaceable^>^ getContents()
-		{
-			return this->contents;
-		}
+		System::Collections::Generic::List<IPlaceable^>^ getContents();
 
 		virtual System::Guid^ getUUID();
+
+		System::Collections::Generic::List<IPlaceable^>^ flattenStorage();
 	};
 }

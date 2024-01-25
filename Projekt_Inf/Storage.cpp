@@ -1,6 +1,7 @@
 #include "Storage.h"
 #include "IPlaceable.h"
 #include "Item.h"
+#include "Compartment.h"
 
 using namespace Program;
 
@@ -21,12 +22,6 @@ void CStore::remove(IPlaceable^ object)
 	object->setParent(nullptr);
 }
 
-void Program::CStore::sendTo(IPlaceable^ item, CStore^ other)
-{
-	other->place(item);
-	this->contents->Remove(item);
-}
-
 System::Collections::Generic::List<Item^>^ Program::CStore::getItems()
 {
 	auto list = gcnew System::Collections::Generic::List<Item^>;
@@ -38,7 +33,30 @@ System::Collections::Generic::List<Item^>^ Program::CStore::getItems()
 	return list;
 }
 
+System::Collections::Generic::List<IPlaceable^>^ Program::CStore::getContents()
+{
+	return this->contents;
+}
+
 System::Guid^ Program::CStore::getUUID()
 {
 	return nullptr;
+}
+
+System::Collections::Generic::List<IPlaceable^>^ Program::CStore::flattenStorage()
+{
+	System::Collections::Generic::List<IPlaceable^>^ list
+		= gcnew System::Collections::Generic::List<IPlaceable^>;
+
+	for each (IPlaceable ^ element in this->contents)
+	{
+		list->Add(element);
+		if (element->GetType()->Name == L"Compartment")
+		{
+			Compartment^ compartment = dynamic_cast<Compartment^>(element);
+
+			list->AddRange(compartment->flattenStorage());
+		}
+	}
+	return list;
 }
