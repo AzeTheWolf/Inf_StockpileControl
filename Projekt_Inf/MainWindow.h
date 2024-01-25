@@ -1306,7 +1306,7 @@ namespace Program {
 
 
 		System::Collections::Generic::List<IPlaceable^>^ flat = 
-			ProgramState::flattenStorage(ProgramState::masterStorage);
+			ProgramState::masterStorage->flattenStorage();
 
 		for each (IPlaceable ^ element in flat)
 		{
