@@ -163,10 +163,23 @@ void DatabaseConnection::openConnection()
 	if (!ProgramState::isRemote) return;
 	if (!isClosed) return;
 
-	this->conn = this->driver->connect("tcp://localhost:3306/stockpilemanager", "usr", "passwd");
+	try
+	{
+		this->conn = this->driver->connect("tcp://localhost:3306/stockpilemanager", "usr", "passwd");
 
-	this->conn->setClientOption("OPT_CHARSET_NAME", "utf8");
-	this->conn->setClientOption("OPT_SET_CHARSET_NAME", "utf8");
+		this->conn->setClientOption("OPT_CHARSET_NAME", "utf8");
+		this->conn->setClientOption("OPT_SET_CHARSET_NAME", "utf8");
+		this->isClosed = false;
+	}
+	catch (sql::SQLException& ex)
+	{
+		Helpers::BoxHandler::handleError(
+			System::String::Format(
+				L"B³¹d bazy danych: {0}" + System::Environment::NewLine,
+				ex.getErrorCode()
+			)
+		);
+	}
 }
 
 void DatabaseConnection::closeConnection()
@@ -175,12 +188,14 @@ void DatabaseConnection::closeConnection()
 	{
 		this->conn->close();
 		delete this->conn;
+		this->isClosed = true;
 	}
 }
 
 void DatabaseConnection::putDatabaseItemRecord(Item^ item)
 {
 	if (!ProgramState::isRemote) return;
+	if (this->isClosed) return;
 	sql::PreparedStatement* statement;
 
 	try
@@ -229,6 +244,7 @@ void DatabaseConnection::putDatabaseItemRecord(Item^ item)
 void DatabaseConnection::delDatabaseItemRecord(Item^ item)
 {
 	if (!ProgramState::isRemote) return;
+	if (this->isClosed) return;
 	sql::PreparedStatement* statement;
 
 	try
@@ -258,6 +274,7 @@ void DatabaseConnection::delDatabaseItemRecord(Item^ item)
 void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
 {
 	if (!ProgramState::isRemote) return;
+	if (this->isClosed) return;
 	sql::PreparedStatement* statement;
 
 	try
@@ -310,6 +327,7 @@ void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
 void DatabaseConnection::delDatabaseStoreRecord(Compartment^ store)
 {
 	if (!ProgramState::isRemote) return;
+	if (this->isClosed) return;
 	sql::PreparedStatement* statement;
 
 	try
@@ -339,6 +357,7 @@ void DatabaseConnection::delDatabaseStoreRecord(Compartment^ store)
 void Program::DataReadWrite::DatabaseConnection::emptyDatabaseItemTable()
 {
 	if (!ProgramState::isRemote) return;
+	if (this->isClosed) return;
 	sql::PreparedStatement* statement;
 
 	try
@@ -364,6 +383,7 @@ void Program::DataReadWrite::DatabaseConnection::emptyDatabaseItemTable()
 void Program::DataReadWrite::DatabaseConnection::emptyDatabaseStoreTable()
 {
 	if (!ProgramState::isRemote) return;
+	if (this->isClosed) return;
 	sql::PreparedStatement* statement;
 
 	try
@@ -389,6 +409,7 @@ void Program::DataReadWrite::DatabaseConnection::emptyDatabaseStoreTable()
 void DatabaseConnection::updateDatabaseItemEntry(System::String^ col, System::String^ value, System::Guid^ uuid)
 {
 	if (!ProgramState::isRemote) return;
+	if (this->isClosed) return;
 	sql::PreparedStatement* statement;
 
 	try
@@ -419,6 +440,7 @@ void DatabaseConnection::updateDatabaseItemEntry(System::String^ col, System::St
 void DatabaseConnection::purge(Compartment^ store, bool doRootElement)
 {
 	if (!ProgramState::isRemote) return;
+	if (this->isClosed) return;
 	sql::PreparedStatement* statement;
 
 	for each (IPlaceable ^ element in store->getContents())
@@ -471,6 +493,7 @@ void DatabaseConnection::purge(Compartment^ store, bool doRootElement)
 void Program::DataReadWrite::DatabaseConnection::loadFromDatabase()
 {
 	if (!ProgramState::isRemote) return;
+	if (this->isClosed) return;
 	sql::Statement* statement = this->conn->createStatement();
 
 	sql::ResultSet* resultStores = statement->executeQuery("SELECT * FROM compartments");

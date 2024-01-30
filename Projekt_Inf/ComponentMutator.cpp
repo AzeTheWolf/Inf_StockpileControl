@@ -124,7 +124,7 @@ void ComponentMutator::regenerateList(System::Windows::Forms::ListView^ list)
 		{
 			listItem->BackColor = System::Drawing::Color::DarkOrange;
 		}
-		else if (item->getDecayDate() < System::DateTime::Now.AddDays(2))
+		else if (item->getDecayDate() < System::DateTime::Now.AddDays(5))
 		{
 			listItem->BackColor = System::Drawing::Color::Yellow;
 		}
