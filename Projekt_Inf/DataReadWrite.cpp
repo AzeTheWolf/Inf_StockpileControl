@@ -39,12 +39,12 @@ System::Collections::Generic::List<PlaceableData^>^ FileIO::_convert(System::Col
 		{
 			Item^ item = dynamic_cast<Item^>(element);
 			if (item == nullptr) continue;
-
 			data->decaysOn = item->getDecayDate();
 			data->quantity = item->getQuantity();
 			data->stockpileAlert = item->getAlertLevel();
 			data->contents = nullptr;
 			data->type = ElementType::ITEM;
+			data->id = item->getUUID()->ToString();
 		} else if (element->GetType()->Name == L"Compartment")
 		{
 			Compartment^ store = dynamic_cast<Compartment^>(element);
@@ -54,6 +54,7 @@ System::Collections::Generic::List<PlaceableData^>^ FileIO::_convert(System::Col
 			data->stockpileAlert = 0;
 			data->contents = FileIO::_convert(store->getContents());
 			data->type = ElementType::COMPARTMENT;
+			data->id = store->getUUID()->ToString();
 		}
 
 		output->Add(data);
