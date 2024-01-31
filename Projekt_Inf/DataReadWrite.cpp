@@ -214,7 +214,9 @@ void DatabaseConnection::putDatabaseItemRecord(Item^ item)
 			msclr::interop::marshal_as<std::string>(item->getDecayDate().ToString()));
 		statement->setString(5, 
 			wstring_utf8(msclr::interop::marshal_as<std::wstring>(item->getName())));
-		statement->setString(6, msclr::interop::marshal_as<std::string>(item->getDescription()));
+		statement->setString(6, 
+			wstring_utf8(msclr::interop::marshal_as<std::wstring>(item->getDescription()))
+		);
 		statement->setString(7, msclr::interop::marshal_as<std::string>(parentID));
 
 		statement->execute();
@@ -290,10 +292,12 @@ void DatabaseConnection::putDatabaseStoreRecord(Compartment^ store)
 			1, msclr::interop::marshal_as<std::string>(store->getUUID()->ToString())
 		);
 		statement->setString(
-			2, msclr::interop::marshal_as<std::string>(store->getName())
+			2, 
+			wstring_utf8(msclr::interop::marshal_as<std::wstring>(store->getName()))
 		);
 		statement->setString(
-			3, msclr::interop::marshal_as<std::string>(store->getDescription())
+			3,
+			wstring_utf8(msclr::interop::marshal_as<std::wstring>(store->getDescription()))
 		);
 		statement->setString(
 			4, msclr::interop::marshal_as<std::string>(parentID)
@@ -419,7 +423,9 @@ void DatabaseConnection::updateDatabaseItemEntry(System::String^ col, System::St
 				msclr::interop::marshal_as<std::string>("UPDATE items SET "+col+" = ? WHERE uuid = ?")
 			);
 
-		statement->setString(1, msclr::interop::marshal_as<std::string>(value));
+		statement->setString(1, 
+			wstring_utf8(msclr::interop::marshal_as<std::wstring>(value))
+		);
 		statement->setString(2, msclr::interop::marshal_as<std::string>(uuid->ToString()));
 
 		statement->execute();
